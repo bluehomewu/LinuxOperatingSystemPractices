@@ -1,0 +1,188 @@
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Week 1 - Part I
+
+Actual course name :
+
+  Understanding Linux by first understanding shell, from a programmer's perspective
+
+$ Purpose of this course
+
+1. Ordinary people        <--- (Almost) everyone is here
+     Programmers          <--- Hope you are here already
+       "System players"   <--- Try not to be here (a set that is disjoint from the set of Ordinary-People)
+         YOU              <--- Try to be here (a subset of both System-Players and Ordinary-People)
+
+2. In this course, I will try to "lead" you into this world of 'YOU' ("腳跨兩個世界")
+   // Expect to have Ubuntu become part of your life and that you are also really familiar this world (of Ubuntu).
+   // But don't expect me to transform you into a Linux expert. This is what you will have to do by yourself!
+   // "師父引進門，修行在個人"
+
+   ＃ I can help 'those who want to know' to know.
+   ＃ I can even lead 'those who are indifferent' into this world where the experts live and work.
+   ＃ But I cannot help those who simply hate programming stuff and system stuff. (Comment on the side : we as instructors should try to reason with these guys and try to help them to be rational in going to other departments to live a much better life.)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Added reference :  # may be considered as a complement of what is being taught in this class
+
+書名 : Linux實務：以Ubuntu為例
+作者 : 游允帥　 20K／376頁／560元
+ISBN : 978-626-328-303-9
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Bloom's taxonomy (學習的金字塔)
+
+  https://citt.ufl.edu/resources/the-learning-process/designing-the-learning-experience/blooms-taxonomy/
+
+  　　　　　． Creating
+  　　　　－－－ Evaluating
+  　　　－－－－－ Analyzing
+  　　－－－－－－－ Applying
+  　－－－－－－－－－ Understanding
+  －－－－－－－－－－－ Remembering
+
+  以做菜(番茄炒蛋)為例
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+$ Why is it so important to be able to comfortably live and work in this world of 'YOU'???
+
+＊ Linux (UNIX in fact) is THE operating system (of just about all server systems).
+＊ It is where the experts work (and play).
+＊ It will be nice to have it as a toy, a tool (a quite powerful tool in fact), and "a private world of your own."
+
+$ So how will we proceed with the learning of Linux/Unix?
+
+I will lead you into this world. Then, you explore it on your own.
+
+＊ Install your own version and constantly play with it.
+
+＊！！！ Have a clear understanding of how shell works, and also have a good grasp of the philosophy underlying UNIX.
+
+＊ Go from this understanding of how shell works (main emphasis) to the understanding how the system works and how it (the system) can be used (via appropriate interactions with the shell) to your advantage.
+
+＊ There will also be an introduction of some good-and-easy-to-use techniques (tricks in fact).
+
+＊ Once you are in there, you can explore it on your own. (There are lots and lots of references on the Web!)
+
+＊ Constantly play with this system of yours! Use it (the knowledge I teach you) well!
+
+Two "extras"
+
+＊ Will also relate the way how a Linux shell works to the working of the PL project you will be writing next year
+
+＊ This course can also serve as a "gentle introduction" to next year's Operating Systems course (at least it can be considered as such)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+課程目標：
+
+  To become really familiar with the world of Linux - Ubuntu in particular
+                                 (the spirit and philosophy of UNIX/Linux,
+                                  the mechanism of how the system works,
+                                  and
+                                  how to cope with the way it works in doing what we want to do),
+  and
+
+  to be able to treat a Linux system as something of your own to play with and try with.
+
+授課(與上課)方式：
+
+  Course teaching style ;
+  Content of course (the accompanying reference "Linux實務：以Ubuntu為例")
+
+  Just come to class.
+  But need to practice some commands before class.
+  Will ask about commands in class (what, how and why).
+  Midterm and Final are just what has been taught and practiced in class.
+
+重要：
+
+  Perform all course required activities (homeworks and 預習) BY YOURSELF!!!
+
+  This is a selective course, not a required course!
+  If you don't want to be constantly "bothered" by the instructor, you should choose other selective courses to satisfy your degree requirements.
+
+評分：
+
+  In-class performance 24%
+  Midterm 30%
+  Final 30%
+  Homework Assignments 12% (Expect to have three homework assignments)
+  An in-class discussion project (the message center) for the last week 4%
+  Points lost due to absence 2^(n-1)   # n is the total number of absence ; if 補到, then 0.5 absence
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Week 1 - Part II
+
+$ Short demo and practices of Linux : ls, cd, ., .., date, echo
+
+$ Time is now ripe to see whether you are fit for taking this course. ＃ What does the term 'system player' mean???
+
+Your first lesson :   // The very first thing you should know
+
+  字串是王道！ ("Text is king!")
+
+  GUI/MUI is only for translating your actions into textual commands that are run in the underlying (textual) system.
+
+  GUI (Windows' world)        vs. Textual interface (Linux world) vs. Apple's MacOS
+  ^^^^^^^^^^^^^^^^^^^^            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^     ^^^^^^^^^^^^^
+  What you are familiar with      What it will be in this course      Your future (should you choose it)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Just what does the word 'system' mean???
+// Something you have to know about (and deal with)
+
+  call stack and heap
+
+  time sharing, process and thread
+
+  # nevertheless, these are not what we will be dealing with, mainly, in this class
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Week 1 - Part III
+
+Another case in point :
+
+  Key-type-vs-char-echo and command processing.
+
+  Key-type-echoing : [System] <-> keyboard, screen
+  # how is it done so that when you type, the screen shows what you type? What happens when you type a password in Linux? (What if it is a Windows GUI???)
+
+  When is your input "sent" to the system for processing? How does it all work?
+
+  What does 'prompt' mean? First level prompt? Second level prompt?
+
+  Try ctrl-m.   // whether in Linux console window or in Window DOS window (Run : cmd), or in NotePad++
+
+  ASCII table
+
+  Control characters :
+    // Try below in UNIX
+    ctrl-m     ENTER      // printf( "\n" )
+    ctrl-d     EOF        // !!! for scanf() to read in ; but seems must be first char of the line in order to work
+                          // for Windows, it is ctrl-z
+                          // An input routine such as scanf() or getchar() must have knowledge of file-length (if the input is a file) so as to return -1 when necessary
+    ctrl-g     bell       // works for Window DOS window
+    ctrl-c     BREAK or INTERRUPT
+    ctrl-h     BACKSPACE // try this when entering a UNIX/Windows command in a Linux-console/Windows-cmd window
+    ctrl-i     TAB       // try this when editing an article in vi // printf( "\t" ) ; // For Linux/Windows, TAB means "command completion"
+
+  (Do you find such things "incredibly boring" or "unlikable"? Or is it something that is more or less okay to know about?)  (This is a test-of-interest for whether to take this course.)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+$ What you need to do for next week's class. # This amounts to HW #0
+
+  Ubuntu18-04安裝.ppt
+  SomeInfoForInstallationOfVirtualBoxAndUbuntu.txt
+  Linux-Practices-Week1-Ubuntu-Install.ppt pp. 10-11
+
+  Linux-Week02-02-22.txt
+
+$ Next week, be sure to bring your laptop to class, fully charged!!!

@@ -1,0 +1,159 @@
+Week 2 - Part I
+
+Students should have done ...
+
+  Ubuntu18-04安裝.ppt
+  SomeInfoForInstallationOfVirtualBoxAndUbuntu.txt
+  Linux-Practices-Week1-Ubuntu-Install.ppt pp. 10-11
+
+  and also did some practices with Linux-Week02-02-22.txt
+
+---------------
+
+記住：
+
+  “拼圖” (=東學一點、西查一點、想辦法拼出(知識)完整圖來) 本來就是資工人生的一部分！
+  # 而且有時會拼錯...
+
+  (歡迎來到資工系！)
+
+  # 不要等有誰能一點一滴的把完整的圖告訴你！
+  # 我們這裡不是這樣work的！
+  #「Knowing how to (more or less safely) explore + Explore」 is a way of life here.
+  # We「try to make a (hopefully correct, at least safe) judgment」 all the time.
+  # 至於「好不好玩」，那就要由你自己來決定了。視人而異。
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+An example of a "cmd" : ed # a line editor (your 計概 final project in Java)
+
+  a : append (after this line)
+  i : insert (before this line)
+  w temp.txt : write to the file 'temp.txt' under the current directory
+  p : print current line
+  . : what is the current line
+  23p
+  23
+  %p : print all
+  2,3s/is/are/p : 第二行到第三行substitute 'is' with 'are'; print 3rd line
+  q
+
+# Try it out on your Ubuntu!
+
+# Case in point : there is nothing to it in writing a Linux command. You already wrote one.
+# Hint : A Linux command is actually a program (an executable) (in most cases).
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Week 2 - Part II
+
+> PS1='Ubuntu-1804 : `pwd`\n`whoami` > '
+
+> ls
+> cd /usr/include
+> ls
+> pwd    # what is 'pwd' ; concept of 'wd'
+
+> PS1=Nonsense---    # just to deomonstrate why it is important to change 'PS1'
+> ls
+> cd /usr/include
+> cd ../..
+> cd var
+> cd <put here whatever reasonable>
+# where are we now???
+> pwd
+
+> PS1='Ubuntu-1804 : `pwd`\n`whoami` > '
+> cd ..
+> ls
+> cd <put here whatever reasonable>
+> pwd    # what is 'pwd' ; concept of 'wd'
+> cd
+> pwd
+> ls -alt
+
+# Now you should know the importance of having >>PS1='Ubuntu-1804 : `pwd`\n`whoami` > '<<
+
+----------
+
+> cd <anything reasonable here>
+> cd
+> ls -al
+> cp .bashrc .bashrc-original
+> vi .bashrc   # or 'nano .bashrc'    # Reference : Vi.doc
+
+add >>PS1='Ubuntu-1804 : `pwd`\n`whoami` > '<< at the end
+save and quit  # in vi, it is ':wq'
+
+> source .bashrc
+
+What is ~/.bashrc for？
+
+# Relation between ~/.bash_profile (login shell) and ~/.bashrc (run via 'bash')
+
+> PS1=Nonsense---
+> # do some 'cd .......' here
+> source ~/.bashrc
+> # do some 'cd .......' here
+
+# Now you should know the importance of having >>PS1='Ubuntu-1804 : `pwd`\n`whoami` > '<< in ~/.bashrc
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Week 2 - Part III
+
+Difference between 'ls lib' and 'ls /lib'？
+
+What about 'ls ~/ShellPractice' (if there is such a dir)?
+
+What is a 'file path'?
+What's in a URL (a "link")?
+
+> mkdir ~/bin
+
+> whereis date
+> /usr/bin/date
+> date
+
+> echo $PATH
+> echo $PS1    # Recall that we have >>PS1='Ubuntu-1804 : `pwd`\n`whoami` > '<< in ~/.bashrc
+
+> cp /usr/bin/date ~/bin/anotherDate
+> ~/anotherDate
+> /home/hsia/anotherDate
+
+> anoth<TAB>
+
+> echo $PATH
+
+> PATH=${PATH}:~/bin
+
+> echo $PATH
+
+> anoth<TAB>    # Followed by <ENTER>
+
+# When you have time, be sure to add >>PATH=${PATH}:~/bin<< to your .bashrc at the end
+# Again, what is this ~/.bashrc for?
+
+> cp /usr/bin/echo ~/bin/Echo
+> Ech<TAB> How do you do
+> Ech<TAB> What is ~ any way
+
+> cp /usr/bin/echo ~/EEcho
+> cd
+> EEch<TAB> How do you do
+> ./EEch<TAB> How do you do
+
+# Why?
+
+> cp /usr/bin/echo ~/bin/EEEcho
+> cd
+> EEEc<TAB> How do you do
+> ./EEE<TAB> How do you do
+> cd /etc
+> EEEc<TAB> How do you do
+> ./EEE<TAB> How do you do
+
+# Why?
+
+> history -15
