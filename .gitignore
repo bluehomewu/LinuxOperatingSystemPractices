@@ -1,0 +1,5 @@
+# Ignore common use compressed file format.
+*.tar.gz
+*.zip
+*.7z
+*.rar
