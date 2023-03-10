@@ -3,3 +3,10 @@
 *.zip
 *.7z
 *.rar
+
+# Ignore log file format.
+*.log
+
+# Ignore temp file.
+*tmp*
+*temp*
