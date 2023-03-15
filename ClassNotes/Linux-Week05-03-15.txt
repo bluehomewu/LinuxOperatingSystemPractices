@@ -136,18 +136,18 @@ Proof of include.
 # include <stdio.h>
 int main() {
   char ch ;
-  while ( ( ch = getchar() ) != EOF ) {
-    putchar() ;   # we deliberately leave out 'ch' here
+  while ( ( ch = getchar() ) != EOF )
+    putchar() ;   // we deliberately leave out 'ch' here
 } // main()
 
-> g++ -0 testInOutChar testInOutChar.cpp
+> g++ -o testInOutChar testInOutChar.cpp
 testInOutChar.cpp:8:14: 錯誤：too few arguments to function 「int putchar(int)」
 In file included from testInOutChar.cpp:1:0:
 /usr/include/stdio.h:580:12: 附註：declared here
 
 > cat /usr/include/stdio.h | less -N # To see what's on Line 580 (key in '540' and ENTER)
 
-> cat /user/include/stdio.h | grep extern  # What exactly are the functions we can use
+> cat /usr/include/stdio.h | grep extern  # What exactly are the functions we can use
 
 What happened?
 
@@ -156,7 +156,7 @@ What happened?
 # include <stdio.h>
 int main() {
   char ch ;
-  while ( ( ch = getchar() ) != EOF ) { # How does this expression work?
+  while ( ( ch = getchar() ) != EOF ) // How does this expression work?
     putchar( ch ) ;
 } // main()
 
