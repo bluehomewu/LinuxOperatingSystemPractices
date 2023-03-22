@@ -1,0 +1,17 @@
+echo
+
+ echo "Values of \$0 \$1 \$2 are : " $0 $1 $2
+ echo "Values of \$0 is : " $0
+ echo "Total number of arguments is : " $#
+
+ # '$-' doesn't seem to work
+ # echo "Options supplied are : " $-
+
+ echo "Here is the list of all arguments : " $*
+ echo "Process ID of this shell : " $$
+ echo "Return status of last executed command : " $?
+
+ ls /WhatIsThisAnyway
+ echo "Return status of last executed command : " $?
+
+ echo

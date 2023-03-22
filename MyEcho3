@@ -1,0 +1,33 @@
+echo
+
+echo 'Below is the echoing of each one in $*'
+for i in $*
+do
+  echo --- $i
+done
+
+echo $'\n'==================$'\n'
+
+echo "Below is the echoing of each one in '\$*'"
+for i in '$*'
+do
+  echo --- $i
+done
+
+echo $'\n'==================$'\n'
+
+echo 'Below is the echoing of each one in "$*"'
+ for i in "$*"
+do
+  echo --- $i
+done
+
+echo $'\n'==================$'\n'
+
+echo 'Below is the echoing of each one in "$@"'
+for i in "$@"
+do
+  echo --- $i
+done
+
+echo
