@@ -28,3 +28,4 @@ Course design
 | 3 | 2023-03-01 | How is a command executed and the basic SOP for writing a "command" (a C/C++ program in fact) | In-class practices and Q/A | In-class practices and Q/A |
 | 4 | 2023-03-08 | Review of what you should have learned so far ; a preliminary introduction to command separation and shell substitution | In-class practices and Q/A | In-class practices and Q/A |
 | 5 | 2023-03-15 | File permissions, where is what, and where is stdio.h ; some useful commands ; 系統啟動程序與rc.local | In-class practices and Q/A | In-class practices and Q/A
+| 6 | 2023-03-22 | Extended file permissions, fd and inode ; setups for remote-login ; the idea of environment variables/functions, shell builtin variables and three versions of MyEcho ; environment-function versions of MyEcho | In-class practices and Q/A | In-class practices and Q/A
