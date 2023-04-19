@@ -4,11 +4,11 @@ Week 11 (Theme of the week : Command separation and shell substitution - amendme
 
   BashScriptEssentials.txt : bash-extensions ( '(( ... ))', '$(( ... ))', '[[ ... ]]' ) and order of substitution
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
-¾Ç¥Í¥²¶·¹w¥ýÅª»P½m²ß¥H¤U¡A¤W½Ò®É°Ý»P½m²ß¡C
+å­¸ç”Ÿå¿…é ˆé å…ˆè®€èˆ‡ç·´ç¿’ä»¥ä¸‹ï¼Œä¸Šèª²æ™‚å•èˆ‡ç·´ç¿’ã€‚
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 Recall that for key-type-vs-char-echoing
 
@@ -27,37 +27,37 @@ Recall that for key-type-vs-char-echoing
     ctrl-h     BACKSPACE // try this when entering a UNIX/Windows command in a Linux-console/Windows-cmd window
     ctrl-i     TAB       // try this when editing an article in vi // printf( "\t" ) ; // For Linux/Windows, TAB means "command completion"
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 1. Shell special characters and shell metacharacters
 
 What does 'meta' mean?   # Below is what I think the term 'meta' should mean.
 
-  ¦bªÀ·|¤§¤¤¡A¤H»P¤H¤¬°Ê¡A¤H¦b¥Í¬¡ªº¹Lµ{¤§¤¤¤]·|¦³¤C±¡¤»¼¤»P·R«ë±¡¤³¡C  // object-level
-  ªÀ·|¾Ç®a¬ã¨s¤H¦bªÀ·|¤§¤¤ªº¥Í¬¡»P¤¬°Ê(¥H¤Î©Ò¿×ªº¡u¤H¡v¤S¤À­þ¨Ç¤H)¡C    // meta-level¤§¤@
-  ¤ß²z¾Ç®a¬ã¨s¤Hªº¤C±¡¤»¼¤»P·R«ë±¡¤³ªº¨Ó¨Ó¥h¥h¡C                        // meta-level¤§¤G
-  ¤èªk½×ªÌ¬ã¨s¡yªÀ·|¾Ç®a¬ã¨s¡uªÀ·|¤§¤¤¤Hªº¥Í¬¡»P¤¬°Ê(»P¤H¦³­þ¨Ç¤H)¡v¡zÀ³¸Ó¥Î¤°»ò¤èªk¡C // a meta-meta-level (meta-level¤§¤@ªºmeta-level)
-  ¤èªk½×ªÌ¬ã¨s¡y¤ß²z¾Ç®a¬ã¨s¡u¤Hªº¤C±¡¤»¼¤»P·R«ë±¡¤³ªº¨Ó¨Ó¥h¥h¡v¡zÀ³¸Ó¥Î¤°»ò¤èªk¡C     // another meta-meta-level (meta-level¤§¤Gªºmeta-level
-  meta-¤èªk½×ªÌ¬ã¨s¡u¤èªk½×ªÌ¦b¬ã¨s¥L­Ì©Ò¬ã¨sªº¹ï¶H®ÉÀ³¸Ó­n¨Ï¥Î¤°»ò¤èªk¡v¡C            // meta-meta-meta-level
+  åœ¨ç¤¾æœƒä¹‹ä¸­ï¼Œäººèˆ‡äººäº’å‹•ï¼Œäººåœ¨ç”Ÿæ´»çš„éŽç¨‹ä¹‹ä¸­ä¹Ÿæœƒæœ‰ä¸ƒæƒ…å…­æ…¾èˆ‡æ„›æ¨æƒ…ä»‡ã€‚  // object-level
+  ç¤¾æœƒå­¸å®¶ç ”ç©¶äººåœ¨ç¤¾æœƒä¹‹ä¸­çš„ç”Ÿæ´»èˆ‡äº’å‹•(ä»¥åŠæ‰€è¬‚çš„ã€Œäººã€åˆåˆ†å“ªäº›äºº)ã€‚    // meta-levelä¹‹ä¸€
+  å¿ƒç†å­¸å®¶ç ”ç©¶äººçš„ä¸ƒæƒ…å…­æ…¾èˆ‡æ„›æ¨æƒ…ä»‡çš„ä¾†ä¾†åŽ»åŽ»ã€‚                        // meta-levelä¹‹äºŒ
+  æ–¹æ³•è«–è€…ç ”ç©¶ã€Žç¤¾æœƒå­¸å®¶ç ”ç©¶ã€Œç¤¾æœƒä¹‹ä¸­äººçš„ç”Ÿæ´»èˆ‡äº’å‹•(èˆ‡äººæœ‰å“ªäº›äºº)ã€ã€æ‡‰è©²ç”¨ä»€éº¼æ–¹æ³•ã€‚ // a meta-meta-level (meta-levelä¹‹ä¸€çš„meta-level)
+  æ–¹æ³•è«–è€…ç ”ç©¶ã€Žå¿ƒç†å­¸å®¶ç ”ç©¶ã€Œäººçš„ä¸ƒæƒ…å…­æ…¾èˆ‡æ„›æ¨æƒ…ä»‡çš„ä¾†ä¾†åŽ»åŽ»ã€ã€æ‡‰è©²ç”¨ä»€éº¼æ–¹æ³•ã€‚     // another meta-meta-level (meta-levelä¹‹äºŒçš„meta-level
+  meta-æ–¹æ³•è«–è€…ç ”ç©¶ã€Œæ–¹æ³•è«–è€…åœ¨ç ”ç©¶ä»–å€‘æ‰€ç ”ç©¶çš„å°è±¡æ™‚æ‡‰è©²è¦ä½¿ç”¨ä»€éº¼æ–¹æ³•ã€ã€‚            // meta-meta-meta-level
   Etc.
 
-  °ê¥Á«ä¦Ò­n¦³¦ó¬¡°Ê¥H¤Î³o¨Ç¬¡°Ê­n¦³¦ó¤º®e¡B¨Ã±q¨Æ³o¨Ç¬¡°Ê¡C        // object-level
-  ªk«ß¾ÇªÌ¬ã¨sªk«ß(=°ê¥Á¬¡°ÊÀ³¿í¦uªº³W½d¥H¤Î°ê¥Á»P¤½¥Áªº¸ê®æµ¥µ¥)¡C // meta-level
-  ¾Ëªk¾ÇªÌ¬ã¨s¾Ëªk(=¡uªk«ß¡v©ÒÀ³¿í¦uªº³W½d)¡C                       // meta-meta-level
-  ¸ó°ê¬É«ä·Q®a¬ã¨s¡u¾Ëªk¡v©ÒÀ³¿í¦uªº³W½d(=¶W¯Åªk)                   // meta-meta-meta-level
-  ¡u¶W¯Åªk¡v¬OµL©w¸q¦Wµü(§¹¥þ¬O¾a«Å´­»P¦³®Ä¶Ç¼½)¡F©Ò¥Hno more meta-level
+  åœ‹æ°‘æ€è€ƒè¦æœ‰ä½•æ´»å‹•ä»¥åŠé€™äº›æ´»å‹•è¦æœ‰ä½•å…§å®¹ã€ä¸¦å¾žäº‹é€™äº›æ´»å‹•ã€‚        // object-level
+  æ³•å¾‹å­¸è€…ç ”ç©¶æ³•å¾‹(=åœ‹æ°‘æ´»å‹•æ‡‰éµå®ˆçš„è¦ç¯„ä»¥åŠåœ‹æ°‘èˆ‡å…¬æ°‘çš„è³‡æ ¼ç­‰ç­‰)ã€‚ // meta-level
+  æ†²æ³•å­¸è€…ç ”ç©¶æ†²æ³•(=ã€Œæ³•å¾‹ã€æ‰€æ‡‰éµå®ˆçš„è¦ç¯„)ã€‚                       // meta-meta-level
+  è·¨åœ‹ç•Œæ€æƒ³å®¶ç ”ç©¶ã€Œæ†²æ³•ã€æ‰€æ‡‰éµå®ˆçš„è¦ç¯„(=è¶…ç´šæ³•)                   // meta-meta-meta-level
+  ã€Œè¶…ç´šæ³•ã€æ˜¯ç„¡å®šç¾©åè©ž(å®Œå…¨æ˜¯é å®£æšèˆ‡æœ‰æ•ˆå‚³æ’­)ï¼›æ‰€ä»¥no more meta-level
 
 We use characters to describe something.
-We use meta-characters to describe ¡uthe characters that are being used for describing that something¡v.
+We use meta-characters to describe ã€Œthe characters that are being used for describing that somethingã€.
 Metacharacters = characters that are given special meaning in describing "object-level" characters.
 
 e.g.,
 How do we specify the >>"<< character in a string that is being described using >>"<<?
 
-ÄY®æ»¡¨Ó¡A"¹D¦a"ªºshell metacharacters¥u¦³¤T­Ó¡G   "      '      \
-(¨ä¥Lªº©Ò¿×'shell metacharacters'¥u¬O¡u³Q½á¤©¯S®í·N¸qªºcharacters¡v¦Ó¤w (¥u¬O»¡¡G¤@­Óchar¤@¥¹³Q½á¤©¯S®í·N¸q¡A§Ú­Ì´NµLªk¥Î¥¦¨Ó¥Nªí¥¦­ì¨Ó©Ò¥Nªíªº¦r¤¸¡A³o¬O¤@­Ó¥²¶·¸Ñ¨Mªº°ÝÃD¡C))
+åš´æ ¼èªªä¾†ï¼Œ"é“åœ°"çš„shell metacharactersåªæœ‰ä¸‰å€‹ï¼š   "      '      \
+(å…¶ä»–çš„æ‰€è¬‚'shell metacharacters'åªæ˜¯ã€Œè¢«è³¦äºˆç‰¹æ®Šæ„ç¾©çš„charactersã€è€Œå·² (åªæ˜¯èªªï¼šä¸€å€‹charä¸€æ—¦è¢«è³¦äºˆç‰¹æ®Šæ„ç¾©ï¼Œæˆ‘å€‘å°±ç„¡æ³•ç”¨å®ƒä¾†ä»£è¡¨å®ƒåŽŸä¾†æ‰€ä»£è¡¨çš„å­—å…ƒï¼Œé€™æ˜¯ä¸€å€‹å¿…é ˆè§£æ±ºçš„å•é¡Œã€‚))
 
-¬°¤è«K°_¨£¡A³\¦h»¡©ú¤å¥ó©Î®Ñª½±µ§â¡u¦³¯S®í·N¸qªºcharacters¡v¥þ³£¥s§@metacharacters¡C³o¬O¤@¥óÆZµL©`ªº¨Æ¡C
+ç‚ºæ–¹ä¾¿èµ·è¦‹ï¼Œè¨±å¤šèªªæ˜Žæ–‡ä»¶æˆ–æ›¸ç›´æŽ¥æŠŠã€Œæœ‰ç‰¹æ®Šæ„ç¾©çš„charactersã€å…¨éƒ½å«ä½œmetacharactersã€‚é€™æ˜¯ä¸€ä»¶è »ç„¡å¥ˆçš„äº‹ã€‚
 
 What all these bog down to are the following two questions :
 
@@ -65,7 +65,7 @@ What all these bog down to are the following two questions :
 
   How do we "turn off" the speciall meaning of a char-symbol (so that the char-symbol represents the char it originally represents)?
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 Shell Metacharacters (ShellMetacharaters.txt)  # what hsia calls "shell special characters"
 
@@ -96,7 +96,7 @@ var=value            ; (hsia: must have no space!) assign to variable >>var<<
 p1 && p2             ; run p1 ; if successful, run p2
 p1 || p2             ; run p2 ; if unsuccessful, run p2
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 C-string metacharacter : \   %
 
@@ -126,14 +126,14 @@ int main() {
 \v    vertical tab
 \?    question mark
 
-¥t¦³¡G   %c   %d   %e   %f   %g   %s
+å¦æœ‰ï¼š   %c   %d   %e   %f   %g   %s
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 Shell special characters - Characters with special meaning
 (AKA "shell metacharacters", as are often (but wrongly) called)
 
-¤@¡BUnconditional special characters (¥u­n¥X²{´Nºâ¬O¯S®í¦r¤¸)
+ä¸€ã€Unconditional special characters (åªè¦å‡ºç¾å°±ç®—æ˜¯ç‰¹æ®Šå­—å…ƒ)
 
 Delimiters that terminate basic commands (always a token by itself, even if it is within a string) // command terminators
   >                    // be careful of >> and <<, where '<<any-string ... ENTERany-string' is "temporary input file"
@@ -156,7 +156,7 @@ Delimiters that start/end a command
 
 # ((exactly-one-arith-expression)) such as (( a = a + b, b++, a-- )), where 'a' and 'b' are environment variables
 
-¤G¡BConditional special characters (¦b¯S©wª¬ªp¤U¤~ºâ¬O¯S®í¦r¤¸ i.e., has a special meaning only when the char in question is under specific conditions)
+äºŒã€Conditional special characters (åœ¨ç‰¹å®šç‹€æ³ä¸‹æ‰ç®—æ˜¯ç‰¹æ®Šå­—å…ƒ i.e., has a special meaning only when the char in question is under specific conditions)
 
 1. Has to be without a WS prefix (in order to have a special meaning)
 
@@ -202,18 +202,18 @@ Delimiters that start/end a command
 
   '!'                  ; start of a history command which should be of the form '!-<num>' or '!<num>'
 
-¤T¡BMetacharacters (¥Î¥H®ø°£¯S®í¦r¤¸ªº¡u¯S®í¡v¨­¤À)
+ä¸‰ã€Metacharacters (ç”¨ä»¥æ¶ˆé™¤ç‰¹æ®Šå­—å…ƒçš„ã€Œç‰¹æ®Šã€èº«åˆ†)
 
   \                    // '\ENTER' df= no char
   '                    // result is one string
-  "                    // expands '$', '!', '`' within (i.e., ³o¤T­Ó¨ÌÂÂ¯S®í) ; respects '\' ; result is still one string
+  "                    // expands '$', '!', '`' within (i.e., é€™ä¸‰å€‹ä¾èˆŠç‰¹æ®Š) ; respects '\' ; result is still one string
 
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 Illustrate the working of, e.g., '> history 15' and '> !-1' and '> !1084'
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
 ------------ BashScriptEssentials.txt - START -----------------------
 
@@ -512,28 +512,28 @@ EXPANSION
 
 ### Final conclusion by hsia :
 ###
-### ¥ý°Ï¤À¥Xcommand line¤¤©Ò¦³ªº¯S®í¦r¤¸»Pwords(¤£§twhite-spaces)»Pstrings(¥i¥H§twhite-spaces)¡A
-### µM«á¾ã²z¥Xa list of pipelines (pipeline»Ppipeline¤§¶¡¬O¥H ;, &, &&, || ¹j¶}¨Ó)
-### (pipeline¬O(a) basic command( = °ò¥»¤W¬O¤@¦êªºwords»Pstrings¡A
-###                                 ¨ä¤¤¥i¥H¥X²{'$(...)'  (¤§¤¤ªº'...'¤]¬O¤@­Ócommand-line), ©Î
-###                                             '$((...))'(¤§¤¤ªº'...'¥u¯à¬O¤@­Óarithmetic expression)
-###                             ), ©Î
-###            (b) '( ... )'   (¤§¤¤ªº'...'¤]¬O¤@­Ócommand-line), ©Î
-###            (c) '(( ... ))' (¤§¤¤ªº'...'¥u¯à¬O¤@­Óarithmetic expression)
-###            (d) '{ ... ; }' (¤§¤¤ªº'...'¤]¬O¤@­Ócommand-line)
-###  ¨ä«á¥i¥Hfollowed by file-redirection operators ¦p '>', '<', '>>', '|', '|&')
+### å…ˆå€åˆ†å‡ºcommand lineä¸­æ‰€æœ‰çš„ç‰¹æ®Šå­—å…ƒèˆ‡words(ä¸å«white-spaces)èˆ‡strings(å¯ä»¥å«white-spaces)ï¼Œ
+### ç„¶å¾Œæ•´ç†å‡ºa list of pipelines (pipelineèˆ‡pipelineä¹‹é–“æ˜¯ä»¥ ;, &, &&, || éš”é–‹ä¾†)
+### (pipelineæ˜¯(a) basic command( = åŸºæœ¬ä¸Šæ˜¯ä¸€ä¸²çš„wordsèˆ‡stringsï¼Œ
+###                                 å…¶ä¸­å¯ä»¥å‡ºç¾'$(...)'  (ä¹‹ä¸­çš„'...'ä¹Ÿæ˜¯ä¸€å€‹command-line), æˆ–
+###                                             '$((...))'(ä¹‹ä¸­çš„'...'åªèƒ½æ˜¯ä¸€å€‹arithmetic expression)
+###                             ), æˆ–
+###            (b) '( ... )'   (ä¹‹ä¸­çš„'...'ä¹Ÿæ˜¯ä¸€å€‹command-line), æˆ–
+###            (c) '(( ... ))' (ä¹‹ä¸­çš„'...'åªèƒ½æ˜¯ä¸€å€‹arithmetic expression)
+###            (d) '{ ... ; }' (ä¹‹ä¸­çš„'...'ä¹Ÿæ˜¯ä¸€å€‹command-line)
+###  å…¶å¾Œå¯ä»¥followed by file-redirection operators å¦‚ '>', '<', '>>', '|', '|&')
 ### )
-### µM«á¨Ì³W¯x°õ¦æ¦U­Ópipeline(§Y ¥ý¦w±Æ¦nstdin, stdout, stderr¡A
-###                               µM«áEITHERª½±µ°õ¦æthe built-in ©Î '((..))'¤§¤¤ªº'...'¡B
-###                                   OR fork a child shell¥h°õ¦æthe basic command ©Î '(...)'¤§¤¤ªº'...'  )
+### ç„¶å¾Œä¾è¦çŸ©åŸ·è¡Œå„å€‹pipeline(å³ å…ˆå®‰æŽ’å¥½stdin, stdout, stderrï¼Œ
+###                               ç„¶å¾ŒEITHERç›´æŽ¥åŸ·è¡Œthe built-in æˆ– '((..))'ä¹‹ä¸­çš„'...'ã€
+###                                   OR fork a child shellåŽ»åŸ·è¡Œthe basic command æˆ– '(...)'ä¹‹ä¸­çš„'...'  )
 ###
-### µù¡G¦pªG¦¹pipeline¬O'... | ... | ...'¡A«h¬O for each '...' ³£¥tfork a child shell¥h°õ¦æ¤§
+### è¨»ï¼šå¦‚æžœæ­¤pipelineæ˜¯'... | ... | ...'ï¼Œå‰‡æ˜¯ for each '...' éƒ½å¦fork a child shellåŽ»åŸ·è¡Œä¹‹
 ###
-### µù¡G'var=str var=str ...' is considered a basic command (it is in fact a built-in)
+### è¨»ï¼š'var=str var=str ...' is considered a basic command (it is in fact a built-in)
 ###
-### µù¡G°õ¦æ>>`...`<<ªº¤è¦¡¬O¡Gfork a child shell¥h°õ¦æ'...'¡AµM«á±N¥X²{©óstdout¤¤ªºoutput®³¨Óreplace¦¹>>`...`<<
+### è¨»ï¼šåŸ·è¡Œ>>`...`<<çš„æ–¹å¼æ˜¯ï¼šfork a child shellåŽ»åŸ·è¡Œ'...'ï¼Œç„¶å¾Œå°‡å‡ºç¾æ–¼stdoutä¸­çš„outputæ‹¿ä¾†replaceæ­¤>>`...`<<
 ###
-### µù¡G°õ¦æ>>{ ... ; }<< µ¥¦P °õ¦æ>> ... <<<
+### è¨»ï¼šåŸ·è¡Œ>>{ ... ; }<< ç­‰åŒ åŸ·è¡Œ>> ... <<<
 ###
 ### (When executing a BASIC COMMAND, the shell does the following IN THAT ORDER.)
 ### history-substitution (no repetition to talk about, since there are no history commands in history list)
@@ -578,11 +578,11 @@ Argument 4 >>example<<
 > echo $myDateABC
 `date`
 > `date`
-¤G: command not found
+äºŒ: command not found
 
-# myVar4='`date`' ; echo $myVar4 ¨Ã¨S¦³®i¨â¦¸
-# myVar41='$(date)' ; echo $myVar41 ¤]¬O
-# myVar5='$((3+4))' ; echo $myVar5 ¤]¨S¦³
+# myVar4='`date`' ; echo $myVar4 ä¸¦æ²’æœ‰å±•å…©æ¬¡
+# myVar41='$(date)' ; echo $myVar41 ä¹Ÿæ˜¯
+# myVar5='$((3+4))' ; echo $myVar5 ä¹Ÿæ²’æœ‰
 # '> nonsense='ls *' ; > PrintPara $nonsense ' does work though
 
 ============================================================================
@@ -599,8 +599,8 @@ Argument 4 >>example<<
 Total number of parameters : 7
 
 Parameter 0 : >>PrintPara<<
-Parameter 1 : >>¤T<<
-Parameter 2 : >>11¤ë<<
+Parameter 1 : >>ä¸‰<<
+Parameter 2 : >>11æœˆ<<
 Parameter 3 : >>30<<
 Parameter 4 : >>09:24:56<<
 Parameter 5 : >>CST<<
@@ -613,7 +613,7 @@ Parameter 6 : >>2022<<
 
 > abcde=`date`
 > echo $abcde
-¤T 11¤ë 30 09:24:37 CST 2022
+ä¸‰ 11æœˆ 30 09:24:37 CST 2022
 
 # Try the following "command" to see that '<var>=<something>' is indeed handled by
 # the system (the shell, or bash in our case) in a "non-standard way"
@@ -651,8 +651,8 @@ Parameter 6 : >>2022<<
 Total number of parameters : 7
 
 Parameter 0 : >>PrintPara<<
-Parameter 1 : >>¤T<<
-Parameter 2 : >>11¤ë<<
+Parameter 1 : >>ä¸‰<<
+Parameter 2 : >>11æœˆ<<
 Parameter 3 : >>30<<
 Parameter 4 : >>09:24:56<<
 Parameter 5 : >>CST<<
@@ -665,7 +665,7 @@ Parameter 6 : >>2022<<
 
 > abcde=`date`
 > echo $abcde
-¤T 11¤ë 30 09:24:37 CST 2022
+ä¸‰ 11æœˆ 30 09:24:37 CST 2022
 
 # Try the following "command" to see that '<var>=<something>' is indeed handled by
 # the system (the shell, or bash in our case) in a "non-standard way"
@@ -690,7 +690,7 @@ Parameter 6 : >>2022<<
 
 ------------ BashScriptEssentials.txt - END -------------------------
 
-# shellªºGetToken()»·¤ñPLªºGetToken()­n½ÆÂø¡CBut can be done (of course).
+# shellçš„GetToken()é æ¯”PLçš„GetToken()è¦è¤‡é›œã€‚But can be done (of course).
 
 # The following are interesting ...
 
@@ -698,17 +698,17 @@ wang > ab=da
 wang > cd=te
 
 wang > ${ab}${cd}
-¥| 12¤ë  2 14:24:04 CST 2021
+å›› 12æœˆ  2 14:24:04 CST 2021
 
 wang > echo $(${ab}${cd})
-¥| 12¤ë 2 14:26:05 CST 2021
+å›› 12æœˆ 2 14:26:05 CST 2021
 
 wang > $(${ab}${cd})
-¥|: command not found
+å››: command not found
 
 wang > ls > date
 wang > da*
-¥| 12¤ë  2 15:51:35 CST 2021
+å›› 12æœˆ  2 15:51:35 CST 2021
 
 
 ### The following serves to prove that there are no repeated file-name expansions
@@ -742,9 +742,9 @@ t*          tamp2.txt   temp1.txt  temp3Hard1SoftSoft.txt  temp3Hard1.txt  temp3
 
 
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
-# ¦³match¨ì´N¬O³Qmatchªº¡A¨Smatch¨ì´N¬O¥¦¦Û¤v¡C
+# æœ‰matchåˆ°å°±æ˜¯è¢«matchçš„ï¼Œæ²’matchåˆ°å°±æ˜¯å®ƒè‡ªå·±ã€‚
 
 # Suppose there is a file named 't e s t'
 
@@ -760,9 +760,9 @@ t*          tamp2.txt   temp1.txt  temp3Hard1SoftSoft.txt  temp3Hard1.txt  temp3
 
 
 
-¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã¡ã
+ï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½žï½ž
 
-Why doesn't the system like the command >>PrintPara This is date 'That is also date' "Today is `date`. Wonderful!" "I'm at `pwd` and not ~."<< ¡H
+Why doesn't the system like the command >>PrintPara This is date 'That is also date' "Today is `date`. Wonderful!" "I'm at `pwd` and not ~."<< ï¼Ÿ
 
 How can we solve the "~ not substituted (by '/root')" problem in the above PrintPara example?
 
@@ -772,7 +772,7 @@ Para 1 >>This<<
 Para 2 >>is<<
 Para 3 >>date<<
 Para 4 >>That is also date<<
-Para 5 >>Today is ¥| 11¤ë  3 16:07:59 CST 2022. Wonderful.<<
+Para 5 >>Today is å›› 11æœˆ  3 16:07:59 CST 2022. Wonderful.<<
 Para 6 >>I'm at /root/CTest and not /root.<<
 
 Tell me why your solution works.
