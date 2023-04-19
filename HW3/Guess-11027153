@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Generate a random number between 0 and 99
+number=$((RANDOM % 100))
+
+echo "Please guess a number between 0 and 99 (inclusive)"
+
+# Loop until the user guesses the correct number
+while true; do
+    # Read user input
+    read guess
+
+    # Check if the guess is within the range
+    if ! [[ "$guess" =~ ^[0-9]+$ ]]; then
+        echo "Please enter a valid number"
+        continue
+    elif (( guess < 0 || guess > 99 )); then
+        echo "Please guess a number between 0 and 99 (inclusive)"
+        continue
+    fi
+
+    # Compare the guess with the generated number
+    if (( guess < number )); then
+        echo "Higher!"
+    elif (( guess > number )); then
+        echo "Lower!"
+    else
+        echo "You got it!"
+        break
+    fi
+
+    echo "Please guess again"
+done
