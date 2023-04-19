@@ -30,3 +30,6 @@ Course design
 | 5 | 2023-03-15 | File permissions, where is what, and where is stdio.h ; some useful commands ; 系統啟動程序與rc.local | In-class practices and Q/A | In-class practices and Q/A
 | 6 | 2023-03-22 | Extended file permissions, fd and inode ; setups for remote-login ; the idea of environment variables/functions, shell builtin variables and three versions of MyEcho ; environment-function versions of MyEcho | In-class practices and Q/A | In-class practices and Q/A
 | 7 | 2023-03-29 | inode and soft/hard link and pushd/popd ; shell script constructs ; environment functions ; how does all these relate to PL projects | In-class practices and Q/A | In-class practices and Q/A |
+| 8 | 2023-04-05 | 民族掃墓節(放假) |
+| 9 | 2023-04-12 | 期中考 | Review and exam | Exam |
+| 10 |2023-04-19 | Command separation and shell substitution - the complete version ; alias ; practices | In-class practices and Q/A | In-class practices and Q/A |
