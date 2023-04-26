@@ -1,0 +1,393 @@
+Week 12 (Theme of the week : (extended) regular expression and its usage ; the start of combined practices (Part I))
+
+  RE, ERE, and the start of combined practices (Part I)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+要求學生預先讀與練習以下，上課時問與練習。
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+1. Shell special characters
+
+     * any string, including the null string, but not including
+       strings that start with a '.'
+
+     ? any char
+
+     [abc] a char that is one of 'a' or 'b' or 'c'
+
+     [a-m] a char that is one of the characters from 'a' through 'm'
+
+     `     `cmd`
+
+     $     $var    $(cmd)   $((expr))
+
+     '...' matches ... exactly
+
+     "..." matches the quoted content after replacing $var, `cmd` $(cmd)
+           $((expr))  !NUM or !-NUM, while accepting '\' for escape
+
+     \c matches c literally ('\' turns off the special meaning of c)
+
+     What is the meaning of IFS=$'\n' in bash scripting?
+
+     Quoting the bash manpage: Words of the form $'string' are treated specially. The word expands to "string", with backslash-escaped characters replaced as specified by the ANSI C standard. \n is the escape sequence for a newline, so IFS ends up being set to a single newline character.
+
+2. Regular expressions
+
+   // ref. 鳥哥第12章
+
+   ^ line start
+
+     e.g., grep -n '^ This' file.txt
+
+           選出「Line一開頭空了一格，然後是'This'」的那些行
+
+
+   $ line end
+
+     e.g., grep -n 'no more.$' file.txt
+
+           選出「Line在終了時是 'no more.' followed by ENTER」的
+           那些行
+
+
+   . any char
+
+     e.g., grep -n 'Th..' file.txt
+
+           選出「含有Thcc」(c為任一字元，包括空白)的那些行
+
+
+   * (前一個regular expression)重複0到多次
+
+     e.g., grep -n 'go*d' file.txt
+
+           選出含有'gd'或'god'或'good'或'goood'或...的那些行
+           (要有'g'、要有'd'、二者之間可以有任意多個'o')
+
+
+   {2,3} (前一個regular expression)重複2到3次
+
+     e.g., grep -n 'go\{2,5\}d' file.txt
+
+           選出含有'good'或'goood'或'gooood'或'goooood'的那些行
+
+     註： 應該只是'go{2,5}d', 之所以使用'\{'與'\}', 是免得被brace expansion
+
+
+   \ 取消下一字元的special meaning (if there is any)
+
+     e.g., grep -n '\.\.' file.txt
+
+           選出「含有'..'這兩個連續字元」的那些行
+
+
+   [abc] 'a'或'b'或'c'的任一個
+
+   [a-m] 'a'到'm'的任一個
+
+     e.g., grep -n 't[ae]mp[2-5]\.txt' file.txt
+
+           選出「含有'tamp2.txt'或'temp2.txt'或'tamp3.txt'或
+           'temp3.txt'或tamp4.txt'或'temp4.txt'或'tamp5.txt'或
+           'temp5.txt'」的那些行
+
+
+   [^abc] 任一個「非'a'且非'b'且非'c'」的字元
+
+   [^a-m] 任一個「'a'到'm'之中的任一個」的字元
+
+     e.g., grep -n 't[^ae]mp[^2-5]\.txt' file.txt
+
+           選出含有以下所述字串
+
+           1. 長相是'tCmpC.txt'   // C是某個字元
+           2. 但不是「'tamp2.txt'或'temp2.txt'或'tamp3.txt'
+              或'temp3.txt'或tamp4.txt'或'temp4.txt'或'tamp5.txt'或
+              'temp5.txt'」
+
+           的那些行
+
+
+
+// ==============================================================
+
+
+
+3. Extended regular expression - 僅適用於egrep ("extended grep")
+
+   + (前一個regular expression)重複1到多次
+
+     e.g., egrep -n 'go+d' file.txt
+
+           選出含有'god'或'good'或'goood'或...的那些行
+           (要有'g'、要有'd'、二者之間至少要有一個'o'、可以更多)
+
+
+   ? (前一個regular expression)optional
+
+     e.g., egrep -n 'gooo?d' file.txt
+
+           選出含有'good'或'goood'的那些行
+           (要有'g'、要有'd'、二者之間要有兩個'o'、可以有再加一個'o')
+
+
+   | 或
+
+     e.g., egrep -n 'doog|goood' file.txt
+
+
+   () grouped as one
+
+     e.g., egrep -n '(o)+' file.txt
+
+           選出含有一個或多個'o'的那些行
+
+           egrep -n '(\(\()+' file.txt
+
+           選出含有連續N對'(('的那些行
+
+           egrep -n '(a|e)+' file.txt
+
+           選出含有'a'或'e'或'ae'或'ea'或'aaa'或'aae'或'aea'或...
+           的那些行
+
+
+   // === 簡易OR ===
+
+   以下的寫法是"N選一"之意、只能出現於'[]'之中，e.g., [[:digit:]abc]
+
+   [:alnum:]  即[a-zA-Z0-9]
+
+   [:alpha:]  即[a-zA-Z]
+
+   [:blank:]  SPACE or TAB
+
+   [:cntrl:]  Control key, including CR, LF, TAB, DEL
+
+   [:digit:]  [0-9]
+
+   [:graph:]  Any char except SPACE and TAB
+
+   [:lower:]  [a-z]
+
+   [:print:]  Any printable char
+
+   [:punct:]  Any punctuation symbol, including ':' '"' '\'' '?' ...
+
+   [:upper:]  [A-Z]
+
+   [:space:]  white space
+
+   [:xdigit:] [0-9A-Fa-f]
+
+
+
+
+   // === 建議 ===
+
+   如果我們無法確定所使用的regular expression是r.e.還是extended r.e.
+
+   建議直接使用egrep，而不要使用grep。
+
+   (grep看到extended r.e.不會說它錯、只會認為要search'+' '?' '|'
+
+    '(' ')' 這反而會導致我們(錯誤的)以為文章中沒有我們要search的 pattern。
+   )
+
+Regular expressions (grep and egrep) - From "The Unix Programming Environment", p. 105
+
+No regular expression matches a newline
+c        any non-special character matches itself
+\c       turn off any special meaning of character c
+^        beginning of line
+$        end of line
+.        any single character
+[...]    any one of characters in ... ; ranges like a-z are legal
+[^...]                        not in
+\n       what the n'th \(...\) matched (grep only)
+r*       zero or more occurrences of r
+r+       one or more occurrences of r (egrep only)
+r?       zero or one occurrence of r (egrep only)
+r1r2     r1 followed by r2
+r1|r2    r1 or r2 (egrep only)
+\(r\)    tagged regular expression (grep only), can be nested
+(r)      regular expression r (egrep only) ; can be nested
+
+6. EBNF
+
+{}       zero or more
+()       group
+[]       optional
+|        or
+
+---------
+
+A (programming) language is a set of sentences (token streams) satisfying some grammar (the grammar of that language).  Each "sentence" is a program (written in this programming language).
+
+BNF/EBNF is a language for specifying the grammar of a (programming) language.
+(Each BNF/EBNF "sentence" is a grammar.)
+
+Therefore, BNF/EBNF is a meta-language.
+
+Below is a EBNF specification of its own grammar.
+
+Grammar of BNF in EBNF (= BNF + '{' + '}' + '(' + ')' + '[' + ']' )
+
+<grammar> ::= <production> { <production> }
+
+<production> ::= <non-terminal> '::=' ( <terminal> | <non-terminal> ) { ( <terminal> | <non-terminal> ) }
+
+<non-terminal> ::= '<' ANY_STRING '>'
+
+<terminal> ::= STRING_IN_ALL_CAPITAL_LETTERS_WITH_NO_WHITE_SPACE | '\'' ANY_STRING '\'' | EMPTY
+
+Comment : every <non-terminal> must appear at least once on the LHS of a production.
+
+Comment : It is of some convenience to think that we use '|' to put many productions with the same LHS togeter
+          (even though '|' is actually a part of BNF)
+
+Comment : a <terminal> is also known as a token; we use RE or ERE to define what a token is.
+
+Comment : The LHS of the very first <production> is called the start symbol. The being defined grammar is the grammar of the start symbol.
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+cd ~/Shell_Practice
+
+wget --user=zh --password=-tw http://140.135.10.161:1538/Download/PL/OurSchemeProj1.txt
+Rename it as Proj1.txt
+
+wget --user=zh --password=-tw http://140.135.10.161:1538/Download/PL/OurSchemeProj2.txt
+Rename it as Proj2.txt
+
+In all, the following files can be downloaded from 140.135.10.161
+OurSchemeProj[1234],txt
+OurC-Proj[1234].txt
+OurC-Proj234Overview.txt
+NeedOfFIRSTset.txt
+
+wget  https://linux.vbird.org/linux_basic/fedora4/0330regularex/regular_express.txt
+Rename it as regular.txt
+
+   # Below moved up from next week
+
+   cat regular.txt
+
+   grep -n 'the' regular.txt
+
+   grep -vn 'the' regular.txt
+
+   grep -n '[Tt]he' regular.txt
+
+   grep -n 'oo' regular.txt
+
+   grep -n '[^g]oo' regular.txt
+
+   grep -n '[^a-z]oo' regular.txt
+
+   grep -n '[0-9]' regular.txt
+
+   grep -n '[^[:lower:]]oo' regular.txt
+
+   grep -n '[[:digit:]]' regular.txt
+
+   # Above moved up from next week
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Combined practices (of what we have learned so far) - Part I
+
+What are the system's responses, and why?
+
+> cd Shell_Practice
+
+> ls
+2              openssl-0.9.7m             Proj2.txt      temp1.txt               temp8.txt
+2021-Special   openssl-0.9.7m.tar         Proj3.txt      temp2.txt               temp?.txt
+5              openssl-backup             Proj4.txt      temp3Hard1SoftSoft.txt  t e s t
+CMD            OurSchemeProj1.txt         regular.txt    temp3Hard1Soft.txt      Test
+date           PERL                       SET            temp3Hard1.txt          test00.txt
+empty.txt      PrintEchoDollarDollar      ShellPractice  temp3Hard2.txt          test01.txt
+error.txt      PrintEchoDollarDollar.cpp  SOCKET         temp3.txt               test02.txt
+file1          PrintLSStar                t*             temp4Hard1.txt          test9001.txt
+ForWithJustID  PrintLSStar.cpp            taemp2.txt     temp4HardHard.txt       test{test
+MyEcho0        PrintPara                  tamp2.txt      temp4.txt               vi_test.txt
+MyEcho1        PrintPID                   teemp2.txt     temp5.txt               WhatFuncs
+MyEcho2        PrintProcessID             temp           temp6.txt               WhatIsVar
+MyEcho3        Proj1.txt                  temp1          temp7.txt               WhatVars
+
+# date>temp"'?'.txt"    # this will cause >>temp'?'.txt<< to be created
+
+  325  mkdir GrepTest
+  326  cd GrepTest/
+  327  date>Temp1.txt
+  328  ls
+  329  date>Temp2.txt;date>Temp3.txt
+  330  ls
+  331  date>Temp'?'.txt;date>Temp4.txt;date>Temp5.txt
+  332  ls
+  333  date>Temp\'\?\'.txt
+  334  ls
+  335  date>'  '.txt
+  336  ls -l
+  337  date>'  '
+  338  ls -l
+  339  history 15
+
+ls
+
+ls -l / > temp1.txt
+
+cat temp1.txt
+
+for i in 2 3 4 5 6 7
+do
+  cp temp1.txt temp${i}.txt
+done
+
+ls
+
+echo How are we doing here?
+
+     echo *
+     echo .*
+     echo ls -l *
+     echo ls temp[0-5].txt
+     echo ls t*
+     echo ls t*txt
+     echo temp?.txt
+     echo temp'?'.txt
+     echo temp\?.txt
+
+   grep -n cons Proj1.txt
+   grep -n 'cons' Proj1.txt
+   grep -n '[ ]cons[ ]' Proj1.txt
+
+   grep -n [ ]cons[ ] Proj1.txt         # error!!!
+
+   echo grep -n '[ ]cons[ ]' Proj1.txt  # the echoed result of these
+   echo grep -n [ ]cons[ ] Proj1.txt    # two are exactly the same
+
+   # So, why was there an error???
+
+   PrintPara grep -n '[ ]cons[ ]' Proj1.txt
+   PrintPara grep -n [ ]cons[ ] Proj1.txt
+
+   # Again, why was there an error?
+
+  c. Practicing the use of r.e.
+
+   What is wrong?    grep -n [cons]* Proj1.txt
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Why?
+
+   str.split( "/|\\\\|[\t ]*\"[\t ]*|[\t ]*\\.[\t ]*" ) ;
+   //         '/' OR '\' OR '"', maybe with space(s) before/after
+   //         OR '.', maybe with space before/after
+
+
