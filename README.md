@@ -33,3 +33,4 @@ Course design
 | 8 | 2023-04-05 | 民族掃墓節(放假) |
 | 9 | 2023-04-12 | 期中考 | Review and exam | Exam |
 | 10 |2023-04-19 | Command separation and shell substitution - the complete version ; alias ; practices | In-class practices and Q/A | In-class practices and Q/A |
+| 11 | 2023-04-26 | Shell special characters and shell meta-characters ; order of expansion ; practices | In-class practices and | Q/A | In-class practices and Q/A |
