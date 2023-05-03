@@ -1,0 +1,698 @@
+Week 13 (Theme of the week : More combined practices of the Linux knowledge we got so far )
+
+  Combined practices (Part I continued, Part II, Part III)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+                              Let the game begin!
+
+Combined practices - Part I continued
+
+> ls
+2              openssl-0.9.7m             Proj2.txt      temp1.txt               temp8.txt
+2021-Special   openssl-0.9.7m.tar         Proj3.txt      temp2.txt               temp?.txt
+5              openssl-backup             Proj4.txt      temp3Hard1SoftSoft.txt  t e s t
+CMD            OurSchemeProj1.txt         regular.txt    temp3Hard1Soft.txt      Test
+date           PERL                       SET            temp3Hard1.txt          test00.txt
+empty.txt      PrintEchoDollarDollar      ShellPractice  temp3Hard2.txt          test01.txt
+error.txt      PrintEchoDollarDollar.cpp  SOCKET         temp3.txt               test02.txt
+file1          PrintLSStar                t*             temp4Hard1.txt          test9001.txt
+ForWithJustID  PrintLSStar.cpp            taemp2.txt     temp4HardHard.txt       test{test
+MyEcho0        PrintPara                  tamp2.txt      temp4.txt               vi_test.txt
+MyEcho1        PrintPID                   teemp2.txt     temp5.txt               WhatFuncs
+MyEcho2        PrintProcessID             temp           temp6.txt               WhatIsVar
+MyEcho3        Proj1.txt                  temp1          temp7.txt               WhatVars
+
+# date>temp"'?'.txt"    # this will cause >>temp'?'.txt<< to be created
+
+> PrintPara grep -n [cons]* Proj1.txt    # Here, both '[' and '*' are used for file-name expansions
+Total number of parameters : 7
+
+Parameter 0 : >>PrintPara<<
+Parameter 1 : >>grep<<
+Parameter 2 : >>-n<<
+Parameter 3 : >>openssl-0.9.7m<<
+Parameter 4 : >>openssl-0.9.7m.tar<<
+Parameter 5 : >>openssl-backup<<
+Parameter 6 : >>Proj1.txt<<
+
+> egrep -n [cons]* Proj1.txt             # No error
+Binary file openssl-0.9.7m.tar matches
+grep: openssl-backup: Is a directory
+
+> egrep -n cons Proj1.txt Proj2.txt      # How the above kind of egrep command work
+Proj1.txt:40:  SYMBOL           // a consecutive sequence of printable characters that are
+Proj1.txt:101:      // considered delimiters
+Proj1.txt:514:  > (cons 3 5)  ; once it prints the output, it prints a blank line
+Proj1.txt:515:  ( cons
+Proj1.txt:577:(cons 3 5)  ; once it prints the output, it prints a blank line
+Proj1.txt:612:> ( cons
+Proj1.txt:709:             ( cons "Hi" "How
+Proj2.txt:14:  ?? You wrote a scanner or a ?uscanner layer?v (consisting of several
+Proj2.txt:23:  ?? You wrote a parser or a ?uparser layer?v(consisting of several
+Proj2.txt:31:     satisfies the grammar of an S-expression, it constructs
+Proj2.txt:105:  cons
+Proj2.txt:176:(cons 3 4)     ; an operation on two objects
+Proj2.txt:182:> (cons 3
+Proj2.txt:188:> (cons 3
+Proj2.txt:197:> (cons hello 4)
+Proj2.txt:206:> (cons 1 2 3)
+Proj2.txt:207:ERROR (incorrect number of arguments) : cons
+Proj2.txt:227:> (cons 3
+Proj2.txt:231:> (cons 3 '(4321 5))
+Proj2.txt:300:> (cons hello
+Proj2.txt:312:> (cons hello
+Proj2.txt:326:> (cons hello
+Proj2.txt:340:> (cons hello there)
+Proj2.txt:372:> (cons 3 b)
+Proj2.txt:375:> (cons 3 a)
+Proj2.txt:387:> (cons 5 a)
+
+> PrintPara egrep -n [ cons]* Proj1.txt
+Total number of parameters : 6
+
+Parameter 0 : >>PrintPara<<
+Parameter 1 : >>egrep<<
+Parameter 2 : >>-n<<
+Parameter 3 : >>[<<
+Parameter 4 : >>cons]*<<
+Parameter 5 : >>Proj1.txt<<
+
+> egrep -n [ cons]* Proj1.txt           # Why is there an error?
+grep: Invalid regular expression
+
+> PrintPara egrep -n [\ cons]* Proj1.txt
+Total number of parameters : 7
+
+Parameter 0 : >>PrintPara<<
+Parameter 1 : >>egrep<<
+Parameter 2 : >>-n<<
+Parameter 3 : >>openssl-0.9.7m<<
+Parameter 4 : >>openssl-0.9.7m.tar<<
+Parameter 5 : >>openssl-backup<<
+Parameter 6 : >>Proj1.txt<<
+
+> egrep -n [\ cons]* Proj1.txt          # Why is there no error?
+Binary file openssl-0.9.7m.tar matches
+grep: openssl-backup: Is a directory
+
+> PrintPara egrep -n [te][te]* cons]* Proj1.txt
+Total number of parameters : 27
+
+Parameter 0 : >>PrintPara<<
+Parameter 1 : >>egrep<<
+Parameter 2 : >>-n<<
+Parameter 3 : >>teemp2.txt<<
+Parameter 4 : >>temp<<
+Parameter 5 : >>temp1<<
+Parameter 6 : >>temp1.txt<<
+Parameter 7 : >>temp2.txt<<
+Parameter 8 : >>temp3Hard1SoftSoft.txt<<
+Parameter 9 : >>temp3Hard1Soft.txt<<
+Parameter 10 : >>temp3Hard1.txt<<
+Parameter 11 : >>temp3Hard2.txt<<
+Parameter 12 : >>temp3.txt<<
+Parameter 13 : >>temp4Hard1.txt<<
+Parameter 14 : >>temp4HardHard.txt<<
+Parameter 15 : >>temp4.txt<<
+Parameter 16 : >>temp5.txt<<
+Parameter 17 : >>temp6.txt<<
+Parameter 18 : >>temp7.txt<<
+Parameter 19 : >>temp8.txt<<
+Parameter 20 : >>temp?.txt<<
+Parameter 21 : >>test00.txt<<
+Parameter 22 : >>test01.txt<<
+Parameter 23 : >>test02.txt<<
+Parameter 24 : >>test9001.txt<<
+Parameter 25 : >>cons]*<<
+Parameter 26 : >>Proj1.txt<<
+
+> ls absolutelyNoSuchFile
+ls: cannot access absolutelyNoSuchFile: No such file or directory
+
+> egrep -n [te][te]* cons]* Proj1.txt    # Why is there such an output?
+temp?.txt:20:teemp2.txt
+grep: cons]*: No such file or directory
+
+   /* Below moved to last week
+
+   cat regular.txt
+
+   grep -n 'the' regular.txt
+
+   grep -vn 'the' regular.txt
+
+   grep -n '[Tt]he' regular.txt
+
+   grep -n 'oo' regular.txt
+
+   grep -n '[^g]oo' regular.txt
+
+   grep -n '[^a-z]oo' regular.txt
+
+   grep -n '[0-9]' regular.txt
+
+   grep -n '[^[:lower:]]oo' regular.txt
+
+   grep -n '[[:digit:]]' regular.txt
+
+   above moved to last week */
+
+   // === also try the following (cmd history) as an exercise ===
+
+   2054  egrep '[ ]const[]|[ ]car[ ]' Proj1.txt
+   2055  egrep 'co+nst' Proj1.txt
+   2056  egrep 'go+d' regular.txt
+   2057  egrep 'co+ns' Proj1.txt
+   2058  egrep '[ ]co+ns[ ]|car[ ]' Proj1.txt
+   2059  egrep '[ ]co+ns[ ]|car' Proj1.txt
+   2060  cat Proj1.txt | grep car
+   2061  cat Proj1.txt | grep cdr
+   2062  less Proj1.txt
+   2063  egrep '[ ]co+ns[ ]|car' Proj2.txt
+   2064  egrep '(o)+' regular.txt
+   2065  egrep -n '(\(\()+' Proj2.txt
+   2066  egrep 'c(o)*ns' Proj2.txt
+   2067  grep '[:alphanum:][:digit:]' regular.txt
+   2068  grep '[:alnum:][:digit:]' regular.txt
+   2069  grep '[[:alnum:][:digit:]]' regular.txt
+   2070  egrep '([:digit:])' regular.txt
+   2071  egrep '([:digit:])+' regular.txt
+   2072  egrep '([[:digit:]])+' regular.txt
+   2073  grep '([:blank:]a)+' regular.txt
+   2074  grep '([[:blank:]]a)+' regular.txt
+   2075  grep '([[:blank:]]a)+' Proj2.txt
+   2076  grep '([[:blank:]]\()+' Proj2.txt
+   2077  egrep '([[:blank:]]\()+' Proj2.txt
+   2078  egrep '[[:blank:]]cons[[:blank:]]' Proj2.txt
+   2079  egrep '[[:blank:]]cons[[:blank:]]' Proj1.txt
+   2080  grep '[[:digit:][:digit:] */(' Proj2.txt
+   2081  grep '[[:digit:][:xdigit:]] */(' Proj2.txt
+   2082  grep '[[:digit:][:xdigit:]] */)' Proj2.txt
+   2083  grep '[[:digit:][:xdigit:]cons] */)' Proj2.txt
+   2084  grep '[[:digit:][:xdigit:]cons] /)' Proj2.txt
+   2085  egrep '[[:digit:][:xdigit:]cons] */)' Proj2.txt
+   2086  egrep '[[:digit:][:xdigit:]cons] *\)' Proj2.txt
+   2087  egrep '[[:digit:][:xdigit:]cons] +\)' Proj2.txt
+   2088  egrep '[[:digit:]cons] +\)' Proj2.txt
+   2089  egrep '[[:digit:]cons] +\(' Proj2.txt
+   2090  history 50
+
+   # How to remove trailing spaces in an article
+     (assume that the editor in question allows the use of
+      regular expressions)?
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Combined practices - Part II
+
+What are the system's responses, and why?
+
+2032  PrintPara abc{def,ghi}j
+2033  PrintPara (date)
+2034  PrintPara date
+2035  PrintPara ( date )
+2036  PrintPara /( date /)
+2037  PrintPara \( date \)
+2038  PrintPara \(date\)
+2039  WhatVars
+2040  PrintPara ab{cd,ef}g
+2041  PrintPara ab{ cd,ef }g
+2042  PrintPara ab\{cd,ef\}g
+2043  { date; date;}
+2044  \{ date; date;\}
+2045  echo $((3+5))
+2046  echo $ ( ( 3+5))
+2047  echo $ (( 3+5))
+2048  echo $( ( 3+5))
+2049  ( 3+5)
+2050  abc=345
+2051  ab$abc
+2052  abc=' 345'
+2053  ab$abc
+2054  abc=' 345 ; date'
+2055  ab$abc
+2056  echo ab$abc
+2057  abc='[ -f abc ]'
+2058  echo $abc
+2059  echo `echo abc`
+2060  ((3+5))
+# 以下七個是out of confusion
+2061  ((3+5)) | echo $?
+2062  [[ -f abc ]] | echo $?
+2063  ls  # 事實上沒abc，有a.out
+2064  [[ -f a.out ]] | echo $?
+2065  [[ -f a.o7ut ]] | echo $?
+2066  [ -f a.o7ut ] | echo $?
+2067  [ -f a.out ] | echo $?
+2068  ls   # 以下cmd事實上是分行輸入
+2069  if [[ -f a.out ]]; echo Hi; else       # syntax error!
+2070  if [[ -f a.out ]]; then   echo Hi; else   echo Hello; fi
+2071  if [[ -f a.ou2t ]]; then   echo Hi; else   echo Hello; fi
+2072  ls   # 突然了解之前搞錯了...
+2073  [[ -f a.out ]] ; echo $?
+2074  [[ -f a.o2ut ]] ; echo $?
+2075  [-f test]
+2076  [ -f test ]
+2077  [[-f test]]
+2078  ls [[a
+2079  ls
+2080  ls {a
+2081  ls (a
+2082  ls (a)
+2083  ls ( a )
+2084  {date;date
+2085  { date;date; }
+2086  [[-f test]]
+2087  [[ -f test]] ;
+2088  [[ -f test ]]
+2089  ls test]]
+2090  PrintPara abc
+2091  PrintPara abc=$abcd
+2092  PrintPara abc=abc`date`
+2093  abc=abc`date`
+2094  echo $abc
+2095  PrintPara a<b
+2096  echo $2
+2097  echo ${23}
+2098  echo $23
+2099  echo ${ 23 }
+2100  abc=abc` date `
+2101  echo $abc
+2102  abc=abc'  hi  '
+2103  echo $abc
+2104  abc=abc'  hi  'there
+2105  echo $abc
+2106  abc=abc'    hi    'there
+2107  echo $abc
+2108  abc=abc'    hi    ' there
+2109  abc = 'hi'
+2110  PrintPara abc=$( ls )
+2111  echo $abc
+2112  abc=$( ls )
+2113  echo $abc
+2114  echo ${ abc }de
+2115  echo ${ abc }
+2116  echo ${abc }
+2117  echo ${abc}
+2118  PrintPara ((2+3))
+2119  PrintPara (( 2+3 ))
+2120  PrintPara '(( 2+3 ))'
+2121  PrintPara `(( 2+3 ))`
+2122  (( 2+3 ))
+2123  abc='(( 2+3 ))'
+2124  $abc
+2125  echo $abc
+2126  abc='(('
+2127  $abc 2+3 ))
+2128  echo $abc 2+3 ))
+2129  abc=5
+2130  (( $abc + $abc ))
+2131  PrintPara [[ 5 > 4 ]]
+2132  PrintPara a b
+2133  PrintPara [[ 5 > 4 ]]
+2134  PrintPara [ 5 > 4 ]
+2135  PrintPara 5 > 4
+2136  PrintPara
+2137  5 > 4
+2138  PrintPara (( 5 > 4 ))
+2139  PrintPara '[[ 5 > 4 ]]'
+2140  PrintPara 'a b c'
+2141  PrintPara `date`
+2142  PrintPara "`date`"
+2143  echo a((b
+2144  echo a[[b
+2145  echo (a+b)
+2146  echo (date)
+2147  echo ( date )
+2148  history 100
+2149  history 200
+
+=================================
+
+# 目前pwd是某個system directory
+265  (date;echo '$$')
+266  ( date ; `echo '$$'` )
+267  ( "date;echo $$" )
+268  echo $$
+269  ( " date ; echo '$$' " )
+270  ( date ; echo \$\$ )
+271  myVar='$$'
+272  echo $myVar
+273  ( date ; echo $myVar )
+274  if ((5>4)); then   echo Hi; else   echo Hello; fi
+275  if ((5>40)); then   echo Hi; else   echo Hello; fi
+276  for (( i=1 ; i<3 ; i++ )); do   echo $(( $i*3 )); done
+277  select input in 1 2 3; do   echo Hi; done
+278  select input in 1 2 3; do   echo Hi; break ; done
+279  select input in 10 20 30; do   echo Hi; break ; done
+280  alias
+281  WhatVars
+282  select input in 10 20 30; do   echo Hi; echo $input ; break ; done
+283  man bash
+284  clear
+285  ls
+286  ls -l
+287  less Makefile.common
+288  less Makefile.config
+289  l
+290  clear
+291  less Makefile.config
+292  ls
+293  cd ..
+294  ls
+295  ;
+296  date ;
+297  date date
+298  date ; date
+299  abc,def=Hi
+300  ls {abc,def}
+301  (date,date)
+302  (date;date)
+303  {date;date}
+304  { date;date }; ;
+305  { date;date; }
+306  ls {adb}
+307  ls {abc,def}
+308  ls ab{def}
+309  ls ab{def,xyz}
+310  ls ab{ date; }
+311  ls ab{ date;date; }
+312  ls ab { date;date; }
+313  ls ab; { date;date; }
+314  ls abc(date;date)
+315  ls abc;(date;date)
+316  ls
+317  date > ab(cd
+318  ls
+319  date > ab{cd
+320  ls
+321  cat ab{cd
+322  mv ab{cd ~
+323  cd ~
+324  ls
+325  mkdir Test1
+326  mv ab\{cd Test1
+327  cd Test1
+328  ls
+329  cat ab\{cd > {ab
+330  ls
+331  cat {ab
+332  ls ab;cd
+333  ls ab;abc
+334  cd Test1
+335  date abc def ghi;date
+336  { date;date;}
+337  { date;date}; ;
+338  { date; date}; ;
+339  { date; date;}
+340  { date; date;}date; ;
+341  { date; date;}date; date; ;
+342  date;
+343  }ab
+344  } ab
+345  {} ab
+346  ()ab
+347  () ab
+348  (date)ab
+349  (date)
+350  ;date
+351  date&date
+352  date&&date
+353  date||date
+354  date|date
+355  date | date
+356  date 2 > & 1 date
+357  date 2 >& 1 date
+358  date 2>&1 date
+359  date |& date
+360  { date;}
+361  ls ab\(c
+362  echo abc$(date)
+363  date;
+364  ((3+5))
+365  ((3+5)) ; echo $?
+366  ls
+367  cp {ab abc
+368  ls
+369  [[ -f abc ]] ; echo $?
+370  [[ -f abcd ]] ; echo $?
+371  xyz=abc
+372  [[ -f $xyz ]] ; echo $?
+373  xyz=abcd
+374  [[ -f $xyz ]] ; echo $?
+375  [[ -f `echo abc` ]] ; echo $?
+376  ls
+377  [[ -f `echo abcd` ]] ; echo $?
+378  ls
+379  cp abc abcdate;
+380  ls
+381  cp abc abcxyz=abcd
+382  ls
+383  ls ab*
+384  history 10
+385  cp abc abcls
+386  ls
+387  echo abc`date`
+388  abc=eft`date`
+389  echo $abc
+390  ls a>b
+391  ls
+392  ls abc>d
+393  ls
+394  ls abc>d
+395  ls abc>>d
+396  cat d
+397  ls abc>>d
+398  cat d
+399  abc=abc$(date)
+400  echo $abc
+401  abc=abc$( echo hello )
+402  echo $abc
+403  ls
+404  ls ?
+405  ls
+406  ls *
+407  echo $
+408  abc=$
+409  echo $abc
+410  date <<333  # 等同temporary input file, '333'可以是任何string, 最後key in此string作為input的結束
+a
+b
+c
+d
+;
+f
+h
+2
+333
+411  man bash
+412  echo ((3+4))
+413  ((3+4))
+414  (( 3+4 ))
+415  (( -f hi )) ; echo $?
+416  (( 8+7 )) ; echo $?
+417  history 100
+418  history 200;
+419  abc='     Hi      '
+420  echo abc${abc}abc
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Combined practices - Part III
+
+What are the system's responses, and why?
+
+
+  # 變數應小寫開頭
+  # 指令(執行檔)應大寫開頭
+  # 文字檔要有副檔名.txt // 以表示是文字檔
+
+  myVar1=ThisIs
+  echo $myVar1
+  [[ -z $myVar1 ]] ; echo $?
+  [[ -n $myVar1 ]] ; echo $?
+
+  [[ -z $nonExist ]] ; echo $?
+  [[ -n $nonExist ]] ; echo $?
+  set | grep nonExist
+  echo $nonExist
+
+  ls
+  [[ -e Proj1.txt ]] ; echo $?
+  [[ -e Proj11.txt ]] ; echo $?
+  > empty.txt
+  ls -l
+  [[ -e empty.txt ]] ; echo $?
+  [[ -f empty.txt ]] ; echo $?
+  [[ -s empty.txt ]] ; echo $?
+  [[ -f nonExist.txt ]] ; echo $?
+  [[ -s nonExist.txt ]] ; echo $?
+
+  PrintPara `date`
+  PrintPara '`date`'
+  PrintPara "`date`"
+
+  $((3+4))
+  myVar5='$((3+4))'
+  echo $myVar5
+  $myVar5
+
+  ( date
+    date
+    date
+  )
+
+  ( date ; date ; date ) > test.txt
+  cat test.txt
+
+  myVar7=$((3+4))
+  echo myVar7
+
+  myVar7=$((3+($myVar7-5)))
+  echo $myVar7
+
+  # Problem: '$(( <expr> ))' can only have integers
+
+  myVar8=` echo "scale = 3 ; 3 / $myVar7 ;" | bc `
+  echo $myVar8
+
+  myVar9=`date ; date`
+  echo $myVar9
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Combined practices - Part IV
+
+// From 20210512-finalHistory.txt
+
+# What is the difference?
+a = 5
+a=5
+
+# How does it work?
+$a       # why so
+echo $a  # why the difference
+
+echo $(($a+3)) # Why such a result?
+
+# A review of what we just learned
+a = 5
+a=7
+$a
+echo $a
+$((3+4))
+echo $(( 3 + $a ))
+
+# 'a' a ("global") variable ; '$a' its value
+
+# Arithmetic expression
+# $(( ... )))      # no white-space restriction for the content of '$(( ... ))'
+
+# "Boolean expression"
+test $a -eq 5
+test $a -eq 5 ; echo $?
+test $a -eq 7 ; echo $?
+
+# Another way of writing "Boolean expressions"
+[ $a -eq 5 ]
+[ $a -eq 5 ] ; echo $?
+[ $a -eq 7 ] ; echo $?
+
+# Program exit status is 0 = "command" execution succeeds ("true")
+# Program exit status is non-zero (usually 1) = "command" execution fails ("false")
+
+# Note that there is a fundamental difference between the evaluation of an arithmatic expression
+# and the "evaluation" of a boolean expression
+# While an arithmatic expression is (evaluated and) replaced by the shell,
+# '[ ... ]' or 'test ...' is actually a the execution of a program (named 'test')
+
+man test
+# 'test' is for checking file types and comparing values
+# '=', '!=' are for string comparisons
+# For integer comparisons, use '-eq', '-ne', '-ge', ...
+# '-e' : whether the file exists ; '-w' : whether the file is writable
+
+# This one is not the same thing as the "Boolean expressions" above. Why?
+[$a -eq 5]
+
+# Please explain (why the given errors)
+[ $a -eq 5]
+[ $a -eq 5] ]
+[ $a -eq [5] ]
+[ $a -eq [5]]
+
+# Why such execution results?
+if [ 3=3 ] ; then echo hello ; else echo hi ; fi
+if [ 3=4 ] ; then echo hello ; else echo hi ; fi
+
+# Why the results?
+[ $((3+4)) -eq $((4+3)) ] ; echo $?
+[ $((3+$a)) -eq $((4+3)) ] ; echo $?
+
+# Why the results?
+if [ $((3+4)) -eq $((4+3)) ] ; then echo hello ; else echo hi ; fi
+if [ $((3+$a)) -eq $((4+3)) ] ; then echo hello ; else echo hi ; fi
+
+# Will it be the same?
+if test $((3+4)) -eq $((4+3)) ; then echo hello ; else echo hi ; fi
+if test $((3+$a)) -eq $((4+3)) ; then echo hello ; else echo hi ; fi
+
+# A slightly more complicated "program" (of programs)
+# The use of '(...)' here is similar to the use of '{ ... }' in C
+# C: compound statement    ;    Shell : compound command
+
+if [ $((3+4)) -eq $((4+3)) ] ; then ( date ; echo hello ) ;else(ls;echo hi there);fi
+if [ $((3+$a)) -eq $((4+3)) ] ; then ( date ; echo hello ) ;else(ls;echo hi there);fi
+
+# Always keep in mind that these "instructions" are actually "command executions"！！！
+# DO NOT view them as simply "program statements (containing expressions)"
+#
+# Command execution ( = executing a program ) ≠ expression evaluation
+#
+# When the shell interprets a shell script ( = a "program" of programs ),
+# it just does STRING-REPLACEMENTS and PROGRAM-EXECUTIONS.
+# This is quite different from running a single program (written in C, say).
+
+# A review of what we have just learned.
+
+# To use "globals"
+a=hi
+a=7
+
+# To ask the shell to replace these arithmetic expressions by their corresponding values
+$(( $a + $b * 3))
+$(($a+$b*3))  # parsing works OK
+
+# To run 'test' (or its shorthand notation '[ ... ]') to compare arithmetic values
+test A -gt B  # where A and B are arithetic expressions like '$a', '50', '$((...))'
+[ A -gt B ]
+
+# To use "globals"
+a=$(($a+$b*3))
+b=`[ $a -gt $b ] ; echo $?`   # `...` replaced by its output before setting the value-string of 'b'
+
+# if 指令1 ; then 指令2 ; else 指令3 ; fi
+# if 執行指令1的(last) program exit status為"success"(0) then 執行指令2 else 執行指令3
+#
+# [ 15 -gt 10 ]的program exit status為0 ("success" ; therefore considered to be "true")
+# [ 15 -lt 10 ]的program exit status為1 ("failure" ; therefore considered to be "false")
+#
+# 指令N 可以是 compound指令
+
+if [ 15 -gt 10 ] ;
+  then c=$a' '$b ;
+  else c=$(($a+$b))' 'Hi ;
+fi
+
+if [ 15 -gt 10 ] ;
+  then (c=Yes;ls);
+  else ( c='No Hello'
+         date
+       ) ;
+fi
+
+// END - 20210521-finalHistory.txt
+
+
+
