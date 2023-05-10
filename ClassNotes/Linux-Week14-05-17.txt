@@ -1,0 +1,731 @@
+Week 14 (Theme of the week : A touch of "C programming with Unix" - system(), exec-family, socket)
+
+  fork-wait, execl() and system()
+
+  socket programming
+
+  HW #3 : Socket (  must use execl() and not system() (must fork()) )
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+The problem :
+  When some very specific situation occurs, a daemon process has to restart itself.
+  How can the daemon process do that (restart itself)?
+
+You should start by looking at HW # 3, which requires that you write two programs, a socket client and a socket server.
+
+socket programming + execl() + fork-&-wait // point out diff. of 'exec()' execution in C and in Java
+                                           // (exec() will subsume the original process in C but not in Java)
+
+There are two fork-wait examples for you to reference.
+
+There is one programming example for calling exec().
+
+There are three socket client/server programs. The first two are taken from the Web. There are some discrepancies within these two programs. Find out what the discrepancy is.
+
+The third socket client/server program is my adaptation of the two example programs.
+
+---------------------------
+
+HW #3 socket programming
+
+  This homework is to submit 'client-yourStudentID.cpp' and 'server-yourStudentID.cpp',
+    where 'yourStudentID' is something like '11027123'.
+    (The TAs will let you know where and how to upload your files.)
+
+-- Detailed description --
+
+(a) You are to submit two files (submit it according to TA's instructions) :
+                             (assuming that your student ID is '11027123')
+    client-11027123.cpp, server-11027123.cpp
+
+(b) These two files are written in C/C++.
+    Any command of the exec-family (e.g., execv()) is acceptable.
+    You can also use threads (and not processes) to do it.
+    For more detailed input/output spec., please see below.
+
+(c) Your program should only do things that are needed for achieving
+    the goal of performing required output. Your program should NOT
+    do ANY OTHER thing such as "ftp the TA's secret love letters to the
+    outside world (= any other computer that is not the TA's computer,
+    where your programs are run)".
+
+(d) Here is how your programs should work.
+
+    (The TA already has a shell script named 'myDate' located
+     under /home/Lee/bin/
+     This 'myDate' is executable. Its content is the following :
+
+     // The content of 'myDate' starts from the next line.
+echo "This is my date : "
+date
+echo "Hi"
+     // The content of 'myDate' ends here. This line is not part of 'myDate'.
+    )
+
+    We will open two terminals to execute your (two) programs.
+
+    For convenience, we assume that the prompt of the first terminal is '(A) > '
+    while the prompt of the second terminal is '(B) > '.
+    (This '(A)' and '(B)' is just for the purpose of our discussion. You need
+     not worry about showing it.)
+
+    First,
+
+    (A) > g++ -o server-11027123.cpp server // there is always an ENTER at the end
+
+    Then
+
+    (B) > g++ -o client-11027123.cpp client
+
+    Then
+
+    (A) > ./server   // after we press ENTER, the system does not show '> '
+
+    Then
+
+    (B) > ./client   // after we press ENTER, the system shows '> ' again
+
+    Once we do the above (i.e., enter './client' at the prompt of second terminal),
+
+    the content of the first terminal should look like the following :
+
+> ./server
+This is my date :
+三  9月 28 10:26:13 CST 2022
+Hi
+
+    Then
+
+    (B) > ./client   // after we press ENTER, the system shows '> ' again
+
+    Once we do the above (i.e., enter './client' at the prompt of second terminal),
+
+    the content of the first terminal should now look like the following :
+
+> ./server
+This is my date :
+三  9月 28 10:26:13 CST 2022
+Hi
+This is my date :
+三  9月 28 10:26:16 CST 2022
+Hi
+
+    Then
+
+    (B) > ./client   // after we press ENTER, the system shows '> ' again
+
+    Once we do the above (i.e., enter './client' at the prompt of second terminal),
+
+    the content of the first terminal should now look like the following :
+
+> ./server
+This is my date :
+三  9月 28 10:26:13 CST 2022
+Hi
+This is my date :
+三  9月 28 10:26:16 CST 2022
+Hi
+This is my date :
+三  9月 28 10:26:19 CST 2022
+Hi
+
+     We are free to enter './client' at the prompt in the second terminal
+     for as many times as we want and the first terminal should always
+     respond in a way similar to what we have shown in the above.
+
+     When we are tired of doing this trick, we press Control-c in
+     the first terminal. Once we do so, the prompt of the first terminal
+     reappears, suggeting that the server process has been terminated.
+     Once the server process has been terminated, running './client' in
+     the second terminal will no longer cause the first terminal to
+     show any information that is similar to what is shown in the above.
+
+     Additional requirement :
+
+        You must use execl() and not system() to run 'date'.
+        If you use system() and not execl() to run 'date', you lose half of the points.
+
+-----------------
+
+fork-wait.cpp
+
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+int main(int argc, char *argv[])
+{
+   printf("I am: %d\n", (int) getpid());
+
+   pid_t pid = fork();
+   printf("fork returned: %d\n", (int) pid);
+
+   if (pid < 0) { /* error occurred */
+   	perror("Fork failed");
+   }
+   if (pid == 0) { /* child process */
+   	printf("I am the child with pid %d\n", (int) getpid());
+    printf("Child process is exiting\n");
+    exit(0);
+   }
+   /* parent process */
+   printf("I am the parent waiting for the child process to end\n");
+   wait(NULL);
+   printf("parent process is exiting\n");
+   eturn(0);
+}
+
+
+------------------------------------------------
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main (){
+    int pid;
+    int status;
+
+    printf("Parent: %d\n", getpid());
+
+    pid = fork();
+    if (pid == 0){
+        printf("Child %d\n", getpid());
+        sleep(2);
+        exit(EXIT_SUCCESS);
+    }
+
+    //Parent waits process pid (child)
+    waitpid(pid, &status, 0);
+    //Option is 0 since I check it later
+
+    if (WIFSIGNALED(status)){
+        printf("Error\n");
+    }
+    else if (WEXITSTATUS(status)){
+        printf("Exited Normally\n");
+    }
+
+    printf("Parent: %d\n", getpid());
+
+    return 0;
+}
+
+
+
+-----------------
+
+execTest.cpp
+
+# include <stdio.h>
+# include <unistd.h>
+
+int main( void ) {
+
+  int r = 0 ;
+  r = execl( "/usr/bin/sh", "/usr/bin/sh", "/root/bin/myDate", NULL ) ;
+  // r = execl( "/usr/bin/date", "date", NULL ) ;
+  // r = execl( "/root/bin/myDate", "/root/bin/myDate", NULL ) ;
+
+  if ( r == -1 )
+    printf( "Execution failed.\n" ) ;
+  else
+    printf( "Execution succeeded.\n" ) ;
+
+} // main()
+
+-----------------
+
+Socket-by-HuangKS.cpp
+
+// https://www.kshuang.xyz/doku.php/programming:c:socket
+
+/* Server code in C */
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(void)
+{
+    struct sockaddr_in stSockAddr;
+    int SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if(-1 == SocketFD)
+    {
+        perror("cannot create socket");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(&stSockAddr, 0, sizeof(struct sockaddr_in));
+
+    stSockAddr.sin_family = AF_INET;
+    stSockAddr.sin_port = htons(1100);
+    stSockAddr.sin_addr.s_addr = INADDR_ANY;
+
+    if(-1 == bind(SocketFD,(const struct sockaddr *)&stSockAddr, sizeof(struct sockaddr_in)))
+    {
+        perror("error bind failed");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+
+    if(-1 == listen(SocketFD, 10))
+    {
+        perror("error listen failed");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+
+    for(;;)
+    {
+        int ConnectFD = accept(SocketFD, NULL, NULL);
+
+        if(0 > ConnectFD)
+        {
+            perror("error accept failed");
+            close(SocketFD);
+            exit(EXIT_FAILURE);
+        }
+
+        /* perform read write operations ... */
+        shutdown(ConnectFD, SHUT_RDWR);
+        close(ConnectFD);
+    }
+
+    close(SocketFD);
+    return 0;
+}
+
+
+/* Client code in C */
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int main(void)
+{
+    struct sockaddr_in stSockAddr;
+    int Res;
+    int SocketFD = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    if (-1 == SocketFD)
+    {
+        perror("cannot create socket");
+        exit(EXIT_FAILURE);
+    }
+
+    memset(&stSockAddr, 0, sizeof(struct sockaddr_in));
+
+    stSockAddr.sin_family = AF_INET;
+    stSockAddr.sin_port = htons(1100);
+    Res = inet_pton(AF_INET, "192.168.1.3", &stSockAddr.sin_addr);
+
+    if (0 > Res)
+    {
+        perror("error: first parameter is not a valid address family");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+    else if (0 == Res)
+    {
+        perror("char string (second parameter does not contain valid ipaddress");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+
+    if (-1 == connect(SocketFD, (const struct sockaddr *)&stSockAddr, sizeof(struct sockaddr_in)))
+    {
+        perror("connect failed");
+        close(SocketFD);
+        exit(EXIT_FAILURE);
+    }
+
+    /* perform read write operations ... */
+
+    shutdown(SocketFD, SHUT_RDWR);
+
+    close(SocketFD);
+    return 0;
+}
+
+
+-----------------
+
+Socket-by-Geeksforgeeks.cpp
+
+// https://www.geeksforgeeks.org/socket-programming-cc/
+
+// Server side C/C++ program to demonstrate Socket
+// programming
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#define PORT 8080
+int main(int argc, char const* argv[])
+{
+    int server_fd, new_socket, valread;
+    struct sockaddr_in address;
+    int opt = 1;
+    int addrlen = sizeof(address);
+    char buffer[1024] = { 0 };
+    char* hello = "Hello from server";
+
+    // Creating socket file descriptor
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Forcefully attaching socket to the port 8080
+    if (setsockopt(server_fd, SOL_SOCKET,
+                   SO_REUSEADDR | SO_REUSEPORT, &opt,
+                   sizeof(opt))) {
+        perror("setsockopt");
+        exit(EXIT_FAILURE);
+    }
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
+
+    // Forcefully attaching socket to the port 8080
+    if (bind(server_fd, (struct sockaddr*)&address,
+             sizeof(address))
+        < 0) {
+        perror("bind failed");
+        exit(EXIT_FAILURE);
+    }
+    if (listen(server_fd, 3) < 0) {
+        perror("listen");
+        exit(EXIT_FAILURE);
+    }
+    if ((new_socket
+         = accept(server_fd, (struct sockaddr*)&address,
+                  (socklen_t*)&addrlen))
+        < 0) {
+        perror("accept");
+        exit(EXIT_FAILURE);
+    }
+    valread = read(new_socket, buffer, 1024);
+    printf("%s\n", buffer);
+    send(new_socket, hello, strlen(hello), 0);
+    printf("Hello message sent\n");
+
+    // closing the connected socket
+    close(new_socket);
+    // closing the listening socket
+    shutdown(server_fd, SHUT_RDWR);
+    return 0;
+}
+client.c
+// Client side C/C++ program to demonstrate Socket
+// programming
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#define PORT 8080
+
+int main(int argc, char const* argv[])
+{
+    int sock = 0, valread, client_fd;
+    struct sockaddr_in serv_addr;
+    char* hello = "Hello from client";
+    char buffer[1024] = { 0 };
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("\n Socket creation error \n");
+        return -1;
+    }
+
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(PORT);
+
+    // Convert IPv4 and IPv6 addresses from text to binary
+    // form
+    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)
+        <= 0) {
+        printf(
+            "\nInvalid address/ Address not supported \n");
+        return -1;
+    }
+
+    if ((client_fd
+         = connect(sock, (struct sockaddr*)&serv_addr,
+                   sizeof(serv_addr)))
+        < 0) {
+        printf("\nConnection Failed \n");
+        return -1;
+    }
+    send(sock, hello, strlen(hello), 0);
+    printf("Hello message sent\n");
+    valread = read(sock, buffer, 1024);
+    printf("%s\n", buffer);
+
+    // closing the connected socket
+    close(client_fd);
+    return 0;
+}
+
+
+-----------------
+
+SocketExample-LinuxClass.cpp
+
+/* Server code in C */ // well, C++, due to the use of 'bool' (this unfortunately makes "Hi" a 'string')
+
+// References :
+//   https://www.kshuang.xyz/doku.php/programming:c:socket
+//   https://www.geeksforgeeks.org/socket-programming-cc/
+
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+
+# define PORT_TO_USE 1100
+# define SOCKET_DEBUG true
+
+bool NOT( bool proposition ) {
+  return ! proposition ;
+} // NOT()
+
+void DP( bool printIt, char * msg ) {
+  if ( printIt )
+    printf( "%s\n", msg ) ;
+} // DP()
+
+int main( void ) {
+
+  struct sockaddr_in aSocket;    // a telephone
+  int addrlen = sizeof( aSocket );
+
+  // a paper
+  int aSocketFileFD = socket( PF_INET, SOCK_STREAM, 0 );  // Geeksforgeeks says : AF_LOCAL ; but NO!
+  // aSocketFileFD: socket descriptor, an integer (like a file-handle)
+  // domain: integer, specifies communication domain. We use AF_LOCAL as defined in the POSIX standard for communication between processes on the same host. For communicating between processes on different hosts connected by IPV4, we use AF_INET and AF_INET6 for processes connected by IPV6.
+  // type: communication type
+  //   SOCK_STREAM: TCP(reliable, connection oriented)
+  //   SOCK_DGRAM: UDP(unreliable, connectionless)
+  // protocol: (Geeksforgeeks put 'IPPROTO_TCP' here) Protocol value for Internet Protocol(IP), which is 0. This is the same number which appears on protocol field in the IP header of a packet.(man protocols for more details)
+
+  int bytesRead ;  // -1 indicates "failure"
+
+  int optionValue = 1 ;  // difficult to understand ; maybe just so for beginners
+  char msgReceived[ 1024 ] = { 0 } ;
+  char* msgToSend = (char * ) "Hello from server";
+
+  if ( -1 == aSocketFileFD ) {
+    perror( "Cannot create socket!!!" ) ;
+    exit( EXIT_FAILURE ) ;
+  } // if socket creation error
+
+  // clean the telephone and set it up for receiving calls
+
+  memset( &aSocket, 0, sizeof( struct sockaddr_in ) ) ;
+
+  // This helps in manipulating options for the socket referred by the file descriptor aSocketFileFD. This is completely optional, but it helps in reuse of address and port. Prevents error such as: “address already in use”.
+  if ( setsockopt( aSocketFileFD, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &optionValue, sizeof( optionValue ) ) ) {
+    perror( "setsockopt() failed." );
+    exit( EXIT_FAILURE );
+  } // if setsockopt() error
+
+  // Attach this socket to the port PORT_TO_USE
+  aSocket.sin_family = AF_INET ;
+  aSocket.sin_addr.s_addr = INADDR_ANY ;
+  aSocket.sin_port = htons( PORT_TO_USE ) ;
+
+  // connecting the paper with the telephone to form a bundle
+
+  // if ( -1 == bind( aSocketFileFD, ( struct sockaddr * ) &aSocket, sizeof( aSocket ) ) ) {
+  if ( -1 == bind( aSocketFileFD, ( const struct sockaddr * ) &aSocket, sizeof( struct sockaddr_in ) ) ) {
+    perror( "Error! bind() failed." ) ;
+    close( aSocketFileFD ) ;
+    exit( EXIT_FAILURE ) ;
+  } // if bind() error
+
+  // now we can use the bundle to listen to incoming calls
+
+  if ( -1 == listen( aSocketFileFD, 1 ) ) {  // 1 : the maximum length to which the queue of pending connections for sockfd may grow ; was : 3 Geeksforgeeks says 10
+    perror( "Error! listen() failed." ) ;
+    close( aSocketFileFD ) ;
+    exit( EXIT_FAILURE ) ;
+  } // if listen() error
+
+  DP( SOCKET_DEBUG, (char *) "Right before entering the wait-for-a-call loop." ) ;
+
+  for ( ; ; ) {
+
+    // wait for a call, and accept the call immediately when it comes
+
+    // int connectionFD = accept( aSocketFileFD, ( struct sockaddr * ) &aSocket,
+    //                                           ( socklen_t * ) &addrlen)) ;
+
+    int connectionFD = accept( aSocketFileFD, NULL, NULL ) ;
+
+    if ( connectionFD < 0 ) {  // was : 0 > connectionFD
+      perror( "Error! accept() failed." ) ;
+      close( aSocketFileFD ) ;
+      exit( EXIT_FAILURE ) ;
+    } // if accept() error
+
+    /* perform read write operations ... */
+
+    bytesRead = read( connectionFD, msgReceived, 1024 );
+    if ( SOCKET_DEBUG ) printf( "Message received from client : %s\n", msgReceived );
+    send( connectionFD, msgToSend, strlen( msgToSend ), 0 );
+    DP( SOCKET_DEBUG, (char *) "Hello-msg sent to client" );
+
+    // disconnect this call
+
+    // shutdown( connectionFD, SHUT_RDWR );   // Geeksforgeeks says 'close' (and not 'shutdown') this one
+    close( connectionFD ) ;
+
+    // break ;  // added by hsia ; just one message and we are done
+
+  } // forever
+
+  DP( SOCKET_DEBUG, (char *) "Right after the wait-for-a-call loop." ) ;
+
+  // turn off the telephone-paper bundle and exit
+
+  // close( aSocketFileFD ) ; // Geeksforgeeks says 'shutdown' (and not 'close') this one
+  shutdown( aSocketFileFD, SHUT_RDWR ) ;
+  return 0 ;
+
+} // main()
+
+/* Client code in C */
+
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <unistd.h>
+
+# define PORT_TO_USE 23197
+# define SOCKET_DEBUG true
+
+bool NOT( bool proposition ) {
+  return ! proposition ;
+} // NOT()
+
+void DP( bool printIt, char * msg ) {
+  if ( printIt )
+    printf( "%s\n", msg ) ;
+} // DP()
+
+int main( void ) {
+
+  int bytesRead, callConnectionFD;
+  char* msgToSend = (char *) "Hello from client";
+  char msgReceived[1024] = { 0 };
+
+  struct sockaddr_in aSocket;  // THE telephone
+  int addressConversionResult; // 1 : success ; 0 : source not a string ; -1 : errorNo
+  int aSocketFileFD = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ) ;  // creation of an electronic paper
+
+  if ( -1 == aSocketFileFD ) {
+    perror( "cannot create socket" ) ;
+    exit( EXIT_FAILURE );
+  } // if socket creation error
+
+  // // Geekforgeeks :
+  // int sock = 0 ;
+  // if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+  //     printf("\n Socket creation error \n");
+  //     return -1;
+  // }
+
+  // Tediously clean the telephone and set it up for making calls
+
+  memset( &aSocket, 0, sizeof( struct sockaddr_in ) ) ;
+
+  aSocket.sin_family = AF_INET;
+  aSocket.sin_port = htons( PORT_TO_USE ); // port : PORT_TO_USE
+
+  // prepare the telephone for making a very specific connection (where to call to)
+
+  addressConversionResult = inet_pton( AF_INET, "127.0.0.1", &aSocket.sin_addr );  // was : "192.168.1.3"
+
+  if ( addressConversionResult < 0 ) {  // was : 0 > addressConversionResult
+    perror( "error: first parameter is not a valid address family" );
+    close( aSocketFileFD );
+    exit( EXIT_FAILURE );
+  } // if
+
+  else if ( addressConversionResult == 0 ) { // was : 0 == addressConversionResult
+    perror("char string (second parameter does not contain valid ipaddress");
+    close( aSocketFileFD );
+    exit( EXIT_FAILURE );
+  } // else if
+
+  else // addressConversionResult > 0
+    ;  // OK
+
+  DP( SOCKET_DEBUG, (char *) "Now we can try to make a connection attempt." ) ;
+
+  // put the paper and the telephone in a bundle and try to make a connection attempt
+
+  // // kshuang version
+  // if ( -1 == connect( aSocketFileFD, ( const struct sockaddr * ) &aSocket, sizeof( struct sockaddr_in ) ) ) {
+  //   perror( "connect() failed" ) ;
+  //   close( aSocketFileFD );
+  //   exit( EXIT_FAILURE );
+  // } // if the connection attempt failed
+
+  // Geeksforgeeks version
+  if ( ( callConnectionFD
+         = connect( aSocketFileFD, ( struct sockaddr* ) &aSocket,
+                                   sizeof( aSocket )))
+      < 0 ) {
+    printf("\nConnection Failed \n");
+    return -1;
+  } // if connect() failed
+
+  DP( SOCKET_DEBUG, (char *) "Connection attempt succeeded." ) ;
+
+  /* perform read write operations ... */
+
+  send( aSocketFileFD, msgToSend, strlen( msgToSend ), 0 );
+  DP( SOCKET_DEBUG, (char *) "Hello message sent to server." );
+  bytesRead = read( aSocketFileFD, msgReceived, 1024 );
+  if ( SOCKET_DEBUG ) printf( "Message received from server : %s\n", msgReceived );
+
+  // close( aSocketFileFD ); // Geeksforgeeks says 'close' the one returned by 'connect' (and not 'aSocketFileFD')
+  close( callConnectionFD ) ;
+
+  shutdown( aSocketFileFD, SHUT_RDWR );
+
+  return 0;
+
+} // main()
+
+
+
+
