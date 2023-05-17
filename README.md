@@ -36,3 +36,4 @@ Course design
 | 11 | 2023-04-26 | Shell special characters and shell meta-characters ; order of expansion ; practices | In-class practices and | Q/A | In-class practices and Q/A |
 | 12 | 2023-05-03 | (extended) regular expression and its usage ; combined practices of the knowledge we got so far | In-class practices and Q/A  | In-class practices and Q/A |
 | 13 | 2023-05-10 | the notion of export, processes, and subprocesses ; introducing how the system supports C/C++ programming with Linux/Unix | In-class practices and Q/A | In-class practices and Q/A |
+| 14 | 2023-05-17 | fork-wait, execl() and system() ; socket programming | In-class practices and Q/A | In-class practices and Q/A |
