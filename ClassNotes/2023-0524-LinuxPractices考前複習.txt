@@ -1,0 +1,379 @@
+
+
+------------------------------------------------------------------------------------------------------------------------
+前兩頁。第一題題目有換掉。
+重點：
+1. User-system interaction是有連續性的
+2. 如何分辨user-system interaction與題目(都是黑白顏色)
+------------------------------------------------------------------------------------------------------------------------
+
+＊總共104分。
+
+以下是本課程所整理出來的how shell processes a command line的procedure， You can just assume that the procedure described here is indeed what the shell uses to process a command line.
+
+### 先區分出command line中所有的特殊字元與words(不含white-spaces)與strings(可以含white-spaces)，
+### 然後整理出a list of pipelines (pipeline與pipeline之間是以 ;, &, &&, || 隔開來)
+### (pipeline是(a) basic command( = 基本上是一串的words與strings，
+###                                 其中可以出現'$(...)'  (之中的'...'也是一個command-line), 或
+###                                             '$((...))'(之中的'...'只能是一個arithmetic expression)
+###                             ), 或
+###            (b) '( ... )'   (之中的'...'也是一個command-line), 或
+###            (c) '(( ... ))' (之中的'...'只能是一個arithmetic expression)
+###            (d) '{ ... ; }' (之中的'...'也是一個command-line)
+###  其後可以followed by file-redirection operators 如 '>', '<', '>>', '|', '|&')
+### )
+### 然後依規矩執行各個pipeline(即 先安排好stdin, stdout, stderr，
+###                               然後EITHER直接執行the built-in 或 '((..))'之中的'...'、
+###                                   OR fork a child shell去執行the basic command 或 '(...)'之中的'...'  )
+###
+### 註：如果此pipeline是'... | ... | ...'，則是 for each '...' 都另fork a child shell去執行之
+###
+### 註：'var=str var=str ...' is considered a basic command (it is in fact a built-in)
+###
+### 註：執行>>`...`<<的方式是：fork a child shell去執行'...'，然後將出現於stdout中的output拿來replace此>>`...`<<
+###
+### 註：執行>>{ ... ; }<< 等同 執行>> ... <<<
+###
+### (When executing a BASIC COMMAND, the shell does the following IN THAT ORDER.)
+### history-substitution (no repetition to talk about, since there are no history commands in history list)
+### -> alias substitution (with repetition)
+### -> $-substitution (no repetition ; however, there can be nested $-substitutions ('$'s can be nested))
+### -> file-name expansion (no repetition)
+### -> final command execution # the eventual execution of the current basic command
+
+(1) 在以下的考題、每次出現以下的字樣、就代表user wang在'/home/wang/Final/'之下enter某個或某些command(s)、以及其所得之結果。
+
+(2) 在整份考卷之中所show的user wang所給的commands事實上是「連續給」的，我們只是在這些「user wang連續給的commands」之間穿插考題(以方便問你問題)而已。
+
+(3) 不過請注意，為了方便閱讀，可能會在system output與下一個system-prompt+user-command之間加空行。
+
+(4) 我們事實上是在MacOS的Unix環境中run這些指令，不過應該沒差(反正都是bash)，若真有差、就以Ubuntu-18.04的output為準。
+
+ 
+
+
+### 以下是user wang給command與所得output之例，這是真正在MacOS的console window所run的commands與其output
+
+(wang) /home/wang/Final > date
+2023年 5月19日 週五 11時23分52秒 CST
+                                            ### 這個空行事實上是我們事後加的，以方便閱讀
+(wang) /home/wang/Final > cat PrintPara.cpp
+# include <stdio.h>
+
+int main( int argc, char** argv ) {
+
+  printf( "Num of Para. : %d\n", argc ) ;
+
+  for ( int i = 0 ; i < argc ; i++ )
+    printf( "Para. $%d : %s\n", i, argv[i] ) ;
+
+} // main()
+                              ### 像這個空行「到底是我們事後加的、還是檔案中本來就有的」這並不重要。如果重要、我們就會以'###'加註說明。
+(wang) /home/wang/Final > 
+### 以上這行的出現、代表「之前所show的『commands以及其output』就(暫時)show到此為止」
+
+
+################################# 題目開始 ########################################
+
+(wang) /home/wang/Final > ls           ### 系統真正的output是以tab作分隔，我們把這些tab換成space以求排整齊
+Applications    Library       PycharmProjects                      VSCode
+Desktop         Movies        StartUpScript-canBeDeleted.py        __pycache__
+Documents       Music         StartUpScript-canBeDeleted.pyc	bin
+
+(wang) /home/wang/Final > pwd
+/home/wang/Final
+
+(wang) /home/wang/Final > date
+2023年 5月24日 週三 12時13分10秒 CST
+
+(wang) /home/wang/Final > 
+
+(1) (3 pts.) 請問以上的user-system interaction session之中、'ls'與'pwd'的output有何關係？你必須解釋清楚！
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+考試重點： Shell 處理 user-command-line-input 的 procedure (Linux-Week11-04-26, Lines 513-543) 
+
+> What is your name?    # 會怎樣 and why
+
+# Linux-Week07-03-29.txt Lines 62-157
+# Linux-Week11-04-26.txt Lines 136-208
+(( ... ))
+$(( ... ))
+( ... )
+{ ... }
+[ ... ]
+[[ ... ]]
+
+> a = a + 3
+> (( a = a + 3 ))
+> ((a = a + 3))
+> ( a = a + 3 )
+> (a=a+3)  # OK even if 'a' not exported
+> (a = a + 3) # not OK
+> ( nonsense=nonsense+3 )  # Value of 'nonsense' : 'nonsense+3'
+> [ a=a+3 ] ; echo $?     # 0
+> [ -f noSuchFile ] ; echo $? # 1
+> [-f noSuchFile]
+> [[ -f noSuchFile ] ; echo $?
+
+$(...)
+$((...))
+$abc
+${a}bc
+$'...'
+
+$0, $1, $2, ...
+$*
+$@
+"$*"
+"$@"
+
+...;...;...
+...|...|...
+>
+<
+>>
+<<ABC
+...
+ABC
+...||...
+...&&...
+...&
+...\
+
+"how\\do"
+'how\\do'
+> ls how\ do
+> ls how\ do\
+you\ do
+
+alias
+file name expansion 之 '[...]'與'*'
+(extended) regular expression之'[...]'與'*'
+'^...'
+'...$'
+
+Linux-Week12-05-03.txt
+
+1. Shell special characters
+
+     * any string, including the null string, but not including
+       strings that start with a '.'
+
+     ? any char
+
+     [abc] a char that is one of 'a' or 'b' or 'c'
+
+     [a-m] a char that is one of the characters from 'a' through 'm'
+
+     `     `cmd`
+
+     $     $var    $(cmd)   $((expr))
+
+     '...' matches ... exactly
+
+     "..." matches the quoted content after replacing $var, `cmd` $(cmd)
+           $((expr))  !NUM or !-NUM, while accepting '\' for escape
+
+     \c matches c literally ('\' turns off the special meaning of c)
+
+     What is the meaning of IFS=$'\n' in bash scripting?
+
+     Quoting the bash manpage: Words of the form $'string' are treated specially. The word expands to "string", with backslash-escaped characters replaced as specified by the ANSI C standard. \n is the escape sequence for a newline, so IFS ends up being set to a single newline character.
+
+2. Regular expressions
+
+   // ref. 鳥哥第12章
+
+   ^ line start
+
+     e.g., grep -n '^ This' file.txt
+
+           選出「Line一開頭空了一格，然後是'This'」的那些行
+
+
+   $ line end
+
+     e.g., grep -n 'no more.$' file.txt
+
+           選出「Line在終了時是 'no more.' followed by ENTER」的
+           那些行
+
+
+   . any char
+
+     e.g., grep -n 'Th..' file.txt
+
+           選出「含有Thcc」(c為任一字元，包括空白)的那些行
+
+
+   * (前一個regular expression)重複0到多次
+
+     e.g., grep -n 'go*d' file.txt
+
+           選出含有'gd'或'god'或'good'或'goood'或...的那些行
+           (要有'g'、要有'd'、二者之間可以有任意多個'o')
+
+
+   {2,3} (前一個regular expression)重複2到3次
+
+     e.g., grep -n 'go\{2,5\}d' file.txt
+
+           選出含有'good'或'goood'或'gooood'或'goooood'的那些行
+
+     註： 應該只是'go{2,5}d', 之所以使用'\{'與'\}', 是免得被brace expansion
+
+
+   \ 取消下一字元的special meaning (if there is any)
+
+     e.g., grep -n '\.\.' file.txt
+
+           選出「含有'..'這兩個連續字元」的那些行
+
+
+   [abc] 'a'或'b'或'c'的任一個
+
+   [a-m] 'a'到'm'的任一個
+
+     e.g., grep -n 't[ae]mp[2-5]\.txt' file.txt
+
+           選出「含有'tamp2.txt'或'temp2.txt'或'tamp3.txt'或
+           'temp3.txt'或tamp4.txt'或'temp4.txt'或'tamp5.txt'或
+           'temp5.txt'」的那些行
+
+
+   [^abc] 任一個「非'a'且非'b'且非'c'」的字元
+
+   [^a-m] 任一個「'a'到'm'之中的任一個」的字元
+
+     e.g., grep -n 't[^ae]mp[^2-5]\.txt' file.txt
+
+           選出含有以下所述字串
+
+           1. 長相是'tCmpC.txt'   // C是某個字元
+           2. 但不是「'tamp2.txt'或'temp2.txt'或'tamp3.txt'
+              或'temp3.txt'或tamp4.txt'或'temp4.txt'或'tamp5.txt'或
+              'temp5.txt'」
+
+           的那些行
+
+
+
+// ==============================================================
+
+
+
+3. Extended regular expression - 僅適用於egrep ("extended grep")
+
+   + (前一個regular expression)重複1到多次
+
+     e.g., egrep -n 'go+d' file.txt
+
+           選出含有'god'或'good'或'goood'或...的那些行
+           (要有'g'、要有'd'、二者之間至少要有一個'o'、可以更多)
+
+
+   ? (前一個regular expression)optional
+
+     e.g., egrep -n 'gooo?d' file.txt
+
+           選出含有'good'或'goood'的那些行
+           (要有'g'、要有'd'、二者之間要有兩個'o'、可以有再加一個'o')
+
+
+   | 或
+
+     e.g., egrep -n 'doog|goood' file.txt
+
+
+   () grouped as one
+
+     e.g., egrep -n '(o)+' file.txt
+
+           選出含有一個或多個'o'的那些行
+
+           egrep -n '(\(\()+' file.txt
+
+           選出含有連續N對'(('的那些行
+
+           egrep -n '(a|e)+' file.txt
+
+           選出含有'a'或'e'或'ae'或'ea'或'aaa'或'aae'或'aea'或...
+           的那些行
+
+
+   // === 簡易OR ===
+
+   以下的寫法是"N選一"之意、只能出現於'[]'之中，e.g., [[:digit:]abc]
+
+   [:alnum:]  即[a-zA-Z0-9]
+
+   [:alpha:]  即[a-zA-Z]
+
+   [:blank:]  SPACE or TAB
+
+   [:cntrl:]  Control key, including CR, LF, TAB, DEL
+
+   [:digit:]  [0-9]
+
+   [:graph:]  Any char except SPACE and TAB
+
+   [:lower:]  [a-z]
+
+   [:print:]  Any printable char
+
+   [:punct:]  Any punctuation symbol, including ':' '"' '\'' '?' ...
+
+   [:upper:]  [A-Z]
+
+   [:space:]  white space
+
+   [:xdigit:] [0-9A-Fa-f]
+
+# Which 層次 are you in ?
+
+   grep -n '[ ]cons[ ]' Proj1.txt
+
+   grep -n [ ]cons[ ] Proj1.txt         # error!!! Why???
+
+   echo grep -n '[ ]cons[ ]' Proj1.txt  # the echoed result of these
+   echo grep -n [ ]cons[ ] Proj1.txt    # two are exactly the same
+
+(wang) /home/wang/Final > PrintPara grep -n '[ ]cons[ ]' Proj1.txt
+Num of Para. : 5
+Para. $0 : PrintPara
+Para. $1 : grep
+Para. $2 : -n
+Para. $3 : [ ]cons[ ]
+Para. $4 : Proj1.txt
+
+(wang) /home/wang/Final > PrintPara grep -n [ ]cons[ ] Proj1.txt
+Num of Para. : 7
+Para. $0 : PrintPara
+Para. $1 : grep
+Para. $2 : -n
+Para. $3 : [
+Para. $4 : ]cons[
+Para. $5 : ]
+Para. $6 : Proj1.txt
+
+(wang) /home/wang/Final > 
+
+
+
+
