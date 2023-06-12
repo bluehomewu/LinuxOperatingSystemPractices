@@ -1,0 +1,280 @@
+Week 18 (Theme of the week : Callback and review)
+
+Callback and review (an in-class discussion project : the message center)
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+Prelude : A quick review of the use of 'typedef' for defining new types
+
+          # Similar topics : How do we use 'struct' or 'class' to define new types?
+
+          # Why do we need to define new types anyway???
+
+          # What is the "protocol" (or interface) of a function?
+
+----------------------------------------------------
+
+一、Callback的基本概念(a callback is a function that can be the "value" of a "function variable")
+
+# include <stdio.h>
+# include <stdlib.h>
+
+typedef char * CharPtr ;
+typedef char Str50[ 50 ] ;
+
+typedef void( * CallbackType01 )( CharPtr str ) ; // required function protocol: return void ; para-type CharPtr
+
+# 以下Hello()與Hi()的 protocol 符合 CallbackType01這個型別的要求
+
+void Hello( CharPtr para ) { printf( "Hello, %s.\n", para ) ; }
+void Hi( CharPtr para ) { printf( "Hi, %s.\n", para ) ; }
+
+# 所以Hello()與Hi() 可說是  CallbackType01這個型別 的 兩個(不同的)"value"
+
+int main() {
+
+  int num = -1 ;
+  Str50 str  ;  // char str = new char[ 50 ] ;
+
+  CallbackType01 f = NULL ;  # function as a "first-class citizen" ('f' is a "function variable" (its value is a function))
+
+  printf( "Please enter 1 or 2 (1 for 'Hello' ; 2 for 'Hi' ) > " ) ;
+  scanf( "%d", &num ) ;
+  printf( "Please enter the string to print (no space please) > " ) ;
+  scanf( "%s", str ) ;
+
+  if ( num == 1 )
+    f = Hello ;   # 'f' is a function-variable ; its value is a function
+  else if ( num == 2 )
+    f = Hi ;
+  else { // num != 1 AND num != 2
+    printf( "Illegal input number >>%d<<\n", num ) ;
+    exit( 1 ) ;
+  } // else num is neither 1 nor 2
+
+  f( str ) ;  // calling a callback df= calling the value of a function-variable (with required parameters of course)
+
+} // main()
+
+> gcc -o HiHello HiHello.c
+
+> ./HiHello
+Please enter 1 or 2 (1 for 'Hello' ; 2 for 'Hi' ) > 1
+Please enter the string to print (no space please) > WhatHappens???
+Hello, WhatHappens???.
+
+> ./HiHello
+Please enter 1 or 2 (1 for 'Hello' ; 2 for 'Hi' ) > 2
+Please enter the string to print (no space please) > NoWay!!!
+Hi, NoWay!!!.
+
+>
+
+----------------------------------------------------
+
+二、Callback的進階概念(註冊(register)與呼叫(call))
+
+typedef void ( * CallbackType01 ) ( string str ) ;   # A Function-type (actually a function-pointer type)
+
+class CallbackInfo{  CallbackType01  mFunc ;   string  mKey ;  }    # basically just a struct in disguise
+
+class ControlCenter {
+
+  vector<CallbackInfo*> *mCallbacks ;  // the list of all registered callbacks
+
+  public:
+
+  ControlCenter() { mCallbacks = new vector<CallbackInfo*>() ; }
+
+  void Register( CallbackType01 func,  string  key ) ;
+
+  bool Call( string key, string para ) ; // it = mCallbacks->begin() ; ... (*it)->mFunc( para ) ; ...
+
+} ; // class ControlCenter
+
+     # Here is the way to use a ControlCenter instance for registering callbacks and calling callbacks
+
+     ControlCenter* cc = new ControlCenter() ;
+
+     cc->Register( Hello, "KeyOfHello" ) ; // a-function,  key-of-this-function
+     cc->Register( Hi, "KeyOfHi" ) ;
+       ...
+     cc->Call( "KeyOfHello", "CYCU" ) ; // key-of-the-func-to-call,  para-to-pass
+     ...     # <ROS-topic>   <msg>    如果與ROS對照，key或mKey即ROS-topic
+     cc->Call( "KeyOfHi", "CYCU-ICE" ) ;
+     ...
+
+-----------------------
+
+void Hello( string para ) {
+  cout << "Hello! " << para << "!\n" ;
+} // Hello()
+
+void Hi( string para ) {
+  cout << "Hi there! " << para << "!\n" ;
+} // Hi()
+
+int main( int argc, char** argv ) {
+
+  ControlCenter* cc = new ControlCenter() ;
+
+  cc->Register( Hello, "KeyOfHello" ) ;
+  cc->Register( Hi, "KeyOfHi" ) ;
+
+  cc->Call( "KeyOfHello", "CYCU" ) ;
+
+  cc->Call( "KeyOfHi", "CYCU-ICE" ) ;
+
+  cc->Call( "KeyOfOops", "Oops" ) ;
+
+  return 0 ;
+
+} // main()
+
+--- Output ---
+
+Hello! CYCU!
+Hi there! CYCU-ICE!
+There is no callback registered with such a key >>KeyOfOops<<.
+
+--- END - Output ---
+
+-----------------------
+
+> vi CallbackTest.cpp
+# 以下程式碼的前四個空格是為了增加此處的可讀性。此四個空格事實上不該有。
+
+    # include <string>
+    # include <vector>
+    # include <iostream>
+
+    using namespace std ;
+
+    // A FunctionType (actually a function-ptr type)
+    typedef void ( * CallbackType01 ) ( string str ) ;
+
+    class ControlCenter ;
+
+    class CallbackInfo {
+
+      // default is private
+
+      // To allow CotrolCenter's MF access the private ones here
+      friend class ControlCenter ;
+
+      CallbackInfo( CallbackType01 func, string key ) {
+        mFunc = func, mKey = key ;
+      } // CallbackInfo()
+
+      CallbackType01 mFunc ;  // a registered callback
+      string mKey ;           // its corresponding key
+
+    } ; // class CallbackInfo
+
+    class ControlCenter {
+
+      // default is private
+
+      vector<CallbackInfo*> *mCallbacks ;  // the list of registered callbacks
+
+    public:
+
+      ControlCenter() { mCallbacks = new vector<CallbackInfo*>() ; }
+
+      void Register( CallbackType01 func, string key ) ;
+      bool Call( string key, string para ) ;
+
+    } ; // class ControlCenter
+
+    void ControlCenter::Register( CallbackType01 func, string key ) {
+    // Actually, we should first search mCallbacks for the 'key' ;
+    // If such a key is found in mCallbacks, then we replace its corresponding callback ;
+    // If there is no such key in mCallbacks, then we add the func-key pair
+    // to the end of mCallbacks. What is done now is purely for demo purpose.
+
+      mCallbacks->push_back( new CallbackInfo( func, key ) ) ;
+
+    } // ControlCenter::Register()
+
+    bool ControlCenter::Call( string key, string para ) {
+    // Try to find 'key' in mCallbacks ; if found, call its associated
+    // callback (mFunc) with 'para' and return true ;
+    // if 'key' is not found in mCallbacks, return false ;
+
+      bool called = false ;
+
+      for ( vector<CallbackInfo*>::iterator it = mCallbacks->begin() ;
+            ! called && it != mCallbacks->end() ;
+            it++ ) {
+
+        if ( (*it)->mKey == key ) {
+
+          (*it)->mFunc( para ) ;  // call the callback
+          called = true ;
+
+        } // if this vector element is not what we are looking for
+
+      } // for loop that searches for the to-be-called (and call it)
+
+      // assert : called == TRUE IFF a callback has been found and called
+
+      return called ;
+
+    } // ControlCenter::Call()
+
+    void Hello( string para ) {
+      cout << "Hello! " << para << "!\n" ;
+    } // Hello()
+
+    void Hi( string para ) {
+      cout << "Hi there! " << para << "!\n" ;
+    } // Hi()
+
+    int main( int argc, char** argv ) {
+
+      ControlCenter* cc = new ControlCenter() ;
+
+      cc->Register( Hello, "KeyOfHello" ) ;
+      cc->Register( Hi, "KeyOfHi" ) ;
+
+      if ( cc->Call( "KeyOfHello", "CYCU" ) )
+        cout << "Calling of 'Hello' succeeded.\n" ;
+      else // the 'Call' returned false
+        cout << "Calling of 'Hello' failed.\n" ;
+
+      if ( cc->Call( "KeyOfHi", "CYCU-ICE" ) )
+        cout << "Calling of 'Hi' succeeded.\n" ;
+      else // the 'Call' returned false
+        cout << "Calling of 'Hi' failed.\n" ;
+
+      if ( cc->Call( "KeyOfOops", "Oops" ) )
+        cout << "Calling of 'Oops' succeeded.\n" ;
+      else // the 'Call' returned false
+        cout << "Calling of 'Oops' failed.\n" ;
+
+      return 0 ;
+
+    } // main()
+
+> g++ -o CallbackTest CallbackTest.cpp
+
+> ./CallbackTest
+
+Hello! CYCU!
+Calling of 'Hello' succeeded.
+Hi there! CYCU-ICE!
+Calling of 'Hi' succeeded.
+Calling of 'Oops' failed.
+
+>
+
+
+# An in-class discussion-project : The message-center
+
+(1) One message server and several users
+(2) Each user logs in the system and runs the same program in order to interact with one another.
+(2) With this program in execution, the user first registers a user-ID, and then talks with one another before signing out.
+
+# A more advanced version of this discussion  project
+
+(4) The user create/publish-to/subscribe-from a topic in interacting with others.

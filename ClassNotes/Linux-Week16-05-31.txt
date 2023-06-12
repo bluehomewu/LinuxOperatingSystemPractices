@@ -1,0 +1,584 @@
+Week 16 (Theme of the week : Separate compilation, make, and software installation with make)
+
+  Separate compilation, make, and openssl installation
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+一、What are the basic requirements for implementing a module or package?
+
+＊ 有些東西(the things to "export")是刻意要給別人用的。
+
+＊ 有些東西純粹只是要給自己用的(these things are needed for the purpose of implementing what-are-to-be-exported)
+
+＊ 有時也會要用到別人(export給所有其他人用)的東西(the things to "import")。
+
+C怎麼做以上三件事？ C是使用 module (=.c + .h)的概念。
+
+以stdio這個模組為例
+
+＊ 要(export)給別人用的：
+
+   (1) 宣告於.h(即stdio.h)之中。
+       宣告的方式： extern <type> <function-name> ( <parameter declarations> ) ;    # no function body
+                    extern <type> <variable-name> ;                                 # no initialization
+       e.g.,
+                    extern int F1( int x, float y ) ;
+                    extern char v ;
+
+       # 「宣告」(declaration)只是"告訴compiler這個東西存在，並告知其型別資訊"，以利compiler檢查文法與產生中間碼(或組合語言碼)
+
+   (2) 定義於.c(即stdio.c)之中。
+       e.g.,
+                    int F1( int a, float b ) { ... }    # parameters can have different names
+                    int v = 5 ;
+
+       # 「定義」(definition)牽涉到(此程式在執行時)記憶體的配置
+
+> cat /usr/include/stdio.h | grep extern | grep printf
+extern int fprintf (FILE *__restrict __stream,
+extern int printf (const char *__restrict __format, ...);
+extern int sprintf (char *__restrict __s,
+extern int vfprintf (FILE *__restrict __s, const char *__restrict __format,
+extern int vprintf (const char *__restrict __format, _G_va_list __arg);
+extern int vsprintf (char *__restrict __s, const char *__restrict __format,
+extern int snprintf (char *__restrict __s, size_t __maxlen,
+extern int vsnprintf (char *__restrict __s, size_t __maxlen,
+extern int vasprintf (char **__restrict __ptr, const char *__restrict __f,
+extern int __asprintf (char **__restrict __ptr,
+extern int asprintf (char **__restrict __ptr,
+extern int vdprintf (int __fd, const char *__restrict __fmt,
+extern int dprintf (int __fd, const char *__restrict __fmt, ...)
+extern int obstack_printf (struct obstack *__restrict __obstack,
+extern int obstack_vprintf (struct obstack *__restrict __obstack,
+
+＊ 純粹只是給自己用的：
+
+     在(.c檔案中的、規劃為自用的)function與全域變數之前加'static'
+
+     (But note that once a global variable has a 'static' prefix, it is no longer a "global" variable ;
+      instead, it becomes a "file scope" variable)
+
+      e.g.,
+
+        static int F2( int x, float y ) { ... }
+        static int w = 10 ;
+
+   # 一旦加了'static'這個keyword，C compiler在compile其他模組(的.c檔)時，就不會認為其他模組的F2或w與此處的F2或w是同一個。
+     (亦即：其他模組的F2與w、與此處的F2與w  不相干  )
+
+＊ 要用到別人(export給所有其他人用)的東西
+
+   (1) 宣告此人(此模組)要export給其他人用的東西
+
+       宣告的方式：
+
+         (a) # include <該模組之名.h>         # '# include'這個CPP指令所達到的效果是"展開"(即以該模組的.h檔的內容取代此行)
+         或
+         (b) extern F1( int x, float y ) ;    # 自己直接宣告也可以！沒有說一定要include the whole thing
+
+   (2) Linker會在link所有相關object files時去(試著)找到各個「當初只有declaration而無definition的function或variable」
+       的記憶體位址，然後"填空"。(如果找不到，就會發出Link Error或'undefined reference' error)
+
+一個C程式可以有好幾個.c檔，每個.c檔又可以各有一個相對應的.h檔(裡面(應該要)只有宣告，沒有定義)，任何一個.c檔要用到其他.c檔所export的東西(不管是function還是variable)、就'# include'「那個.c檔相對應(即同名)的.h檔」即可。
+
+C compile各個.c檔是"個別compile"(separate compilation) ( 請見BBS計概版置底文之「編譯器主要工作流程」, or https://i.imgur.com/89gmKsA.png )，系統只有在link階段才需要到其他.o檔去找到各個.o檔之中「當初只見宣告、未見定義的function或variable」的位址。(如果找不到，就會發出Link Error或'undefined reference' error)
+
+C++ was intended to be an extension of C. Therefore, C++ inherited this tradition of C (plus many other things).
+
+----------------------------------------------------
+
+二、一個簡單的例子
+
+> ls
+
+  main.cpp  module1.cpp  module1.H  module2.cpp  module2.H
+
+> cat main.cpp
+
+  # include "module1.H"
+  # include "module2.H"
+
+  using namespace std ;
+
+  int main( int argc, char** argv ) {
+    F1( gX1 ) ;
+    G1( gF1 ) ;
+    return 0 ;
+  } // main()
+
+> cat module1.H
+
+  # ifndef MODULE1_H
+  # define MODULE1_H
+
+  using namespace std ;
+
+  extern int gF1 ;
+
+  extern int F1( int a ) ;
+  // put prolog comment of F1 here
+
+  # endif // MODULE1_H
+
+> cat module2.H
+
+  # ifndef MODULE2_H
+  # define MODULE2_H
+
+  using namespace std ;
+
+  extern int gX1 ;
+
+  extern int G1( int a ) ;
+  // put prolog comment of G1 here
+
+  # endif // MODULE2_H
+
+> cat module1.cpp
+
+  # include "module1.H"
+  # include "module2.H"
+  # include <cstdio>
+
+  using namespace std ;
+
+  int gF1 = 20 ;
+  static int sF2 = 10 ;
+
+  static int F2( int a ) ;
+
+  int F1( int a ) {
+    if ( a > G1( F2( sF2 ) ) )
+      printf( "Value of 'a' ( %d) greater than %d.\n", a, G1( F2( sF2 ) ) ) ;
+    else
+      printf( "Value of 'a' ( %d) not greater than %d.\n", a, G1( F2( sF2 ) ) ) ;
+    return a + F2( sF2 ) ;
+  } // F1()
+
+  static int F2( int a ) {
+    return a + 100 ;
+  } // F2()
+
+> cat module2.cpp
+
+  # include "module1.H"
+  # include "module2.H"
+  # include <cstdio>
+
+  using namespace std ;
+
+  int gX1 = 30 ;
+  static int sX2 = 40 ;
+
+  static int G2( int a ) ;
+
+  int G1( int a ) {
+    if ( a == G2( sX2 ) )
+      printf( "Value of 'a' (%d) is equal to %d.\n", a, G2( sX2 ) ) ;
+    else
+      printf( "Value of 'a' (%d) is not equal to %d.\n", a, G2( sX2 ) ) ;
+    return a - G2( sX2 ) ;
+  } // G1()
+
+  static int G2( int a ) {
+    return a * 3 ;
+  } // G2()
+
+>
+
+以下是separate compilation的完整說明，若趕時間可以先跳過，以後有時間再看
+
+------- Separate Compilation (in C/C++)完整說明 - START -------
+
+＊ Each .c/.cpp (maybe except the file containing main()) can have a corresponding .h/.hpp
+＊ .c/.cpp contains “definitions,” whereas .h/.hpp contains “declarations” (including typedef)
+     // what is the difference between a “definition” and a “declaration” in C/C++？？？
+＊ Together, a .c/.cpp file + a .h/.hpp file form a “module.” (模組)
+＊ A .h/.hpp file contains what the module exports. // the interface part of the being exported
+＊ The corresponding .c/.cpp file contains the implementation part of what is being exported.
+＊ Examples of what’s in .h/.hpp : extern int gHi ; int F(int x) ;   // no initialization! no body!
+＊ In .c/.cpp : int gHi = 5 ; int F( int x ) { ... } ; static int gH = 3 ; static int G( int x ) {...}
+     // what does ‘static’ mean (when this keyword appears outside of a function/class)？？？
+＊ Anyone (any .c/.cpp or even .h/.hpp) who wants to use a module just include its .h/.hpp
+     // Do you remember stdio.h, iostream, string.h, cstring, iostream, string？why include?
+＊ To avoid multiple inclusion, we put something like ‘# ifndef  MODULE_NAME_H’
+     ‘# define MODULE_NAME_H’ at the start and ‘# endif MODULE_NAME_H’ at the end
+＊ To ensure consistency, we often put >> # include “nameOfThisModule.h”<< (or .hpp) in
+     NameOfThisModule.c (or .cpp)     // Why can this ensure consistency?
+＊ The extension (whether it should be .hpp or .hxx or no extension at all) is not important
+     // But consistency in naming convention IS important
+＊ Each module (well, each .c/.cpp) is compiled separately, without considering other .c/.cpp
+     // So, if there is a call to, e.g., printf(), what does the compiler do with this call?
+     // When the program runs, why does the call to printf() work?
+     // What is .a?  What is .o (or .obj)? What does a linker do? Why need linkers?
+
+------- Separate Compilation (in C/C++)完整說明 - END -------
+
+----------------------------------------------------
+
+三、Commands for getting an executable for the above example
+
+To get an executable from main.cpp, module1.cpp, module1.H, module2.cpp and module2.H,
+commands should be issued by the following sequence.
+
+# First, compile module1.cpp, module2.cpp, and main.cpp to get module1.o, module1.o, and main.o
+# The order of compilation is not important.
+
+> g++ --help  # the meaning of '-c'
+
+  ...
+  -c                       Compile and assemble, but do not link
+  ...
+
+> g++ -c -o main.o main.cpp
+> g++ -c -o module1.o module1.cpp
+> g++ -c -o module2.o module2.cpp
+
+> ls
+
+main.cpp  main.o  module1.cpp  module1.H  module1.o  module2.cpp  module2.H  module2.o
+
+# Next, link all relevant object files to get an executable.
+
+> g++ -o myTest main.o module1.o module2.o
+
+> ls
+
+main.cpp  main.o  module1.cpp  module1.H  module1.o  module2.cpp  module2.H  module2.o  myTest
+
+> ./myTest
+
+Value of 'a' (110) is not equal to 120.
+Value of 'a' (110) is not equal to 120.
+Value of 'a' ( 30) greater than -10.
+Value of 'a' (20) is not equal to 120.
+
+>
+
+如果我們改了, e.g., module1.cpp, 我們就必須重建module1.o與myTest, 但module2.o則不須重建。這就是separate compile的rationality(理性思維)所在。
+
+# i.e.,
+
+> vi module1.cpp
+...
+> g++ -c -o module1.o module1.cpp ; g++ -o myTest main.o module1.o module2.o
+> # 'myTest' has been properly updated
+
+只不過、每次都要這樣按規矩做、順序不能錯、不能有漏掉、指令也不能打錯，這種事應該要交由程式來做才對！
+
+這就是make這個「類command interpreter」的由來。
+
+----------------------------------------------------
+
+四、The 'make' command
+
+每當make被執行，它就會去讀一個script-file (通常叫作'Makefile')，然後執行此script-file之中的"要求"。
+
+透過此script-file，我們要能夠告訴make以下事項：
+
+  - 有哪些要做的事(what-to-do)
+  - 這些what-to-do's之間的邏輯關係是什麼(誰先誰後)
+  - 每個what-to-do應該要使用什麼指令(指令是什麼)與(如果要產生檔案的話)檔案的名稱該是什麼
+  - 如果一個需要產生的檔案已經存在了、且無更新的必要、那就不要再去產生這個檔案(不要空耗CPU時間與記憶體空間與what have you)！
+
+一個   "make指令"   主要是由   <目標> + <為達成目標所必須執行的指令>  所組成。
+
+此目標可以是一個(必須要存在的檔案的)檔案名稱，也可以是一個自己掰出來的"代號"(e.g., 'install' 或 'clear')
+
+# 注意：As a convention, 為了配合'make'的運作，請勿把檔案名稱取為一些常用的"目標代號"如'install'與'clear' (依照夏氏規矩以大寫開頭就不會有問題(前提是make的目標代號是用小寫))
+
+不過為了要讓我們能表達目標與目標之間的邏輯關係，每個 "make指令" 還可以  另加一個  <先決條件>  (此先決條件當然可以是EMPTY)
+
+       "make指令" df= <目標> + <為達成目標所必須執行的指令> + <先決條件>
+
+理性思維：必須要目標的先決條件已經滿足了(且目標也確實需要更新)，make才會(代替我們)執行<為達成目標所必須執行的指令>以達成目標。
+
+----------------------------------------------------
+
+五、使用make的簡單範例
+
+> ls
+
+main.cpp  Makefile  module1.cpp  module1.H  module2.cpp  module2.H
+
+> make myTest   # 也可以'make clean' ; 如果只是'make'而已，那就是make第一個target (i.e., 'make all')
+
+> ls
+
+main.cpp  main.o  Makefile  module1.cpp  module1.H  module1.o  module2.cpp  module2.H  module2.o  myTest
+
+> cat Makefile
+
+CC = g++
+CFLAGS = -c              # instead of : -DDEBUG -c
+LIBS = -lncurses         # not used
+INCLUDE = -I/usr/src/menu/include   # also not used
+
+all: clean install
+
+install: myTest
+        chmod 750 myTest
+        cp myTest /home/hsia/bin
+
+myTest: main.o module1.o module2.o
+        $(CC) -o $@ $?                    # $(LIBS)
+
+main.o: main.cpp
+        $(CC) $(CFLAGS) -o $@ $?    # $(INCLUDE)
+
+module1.o: module1.cpp
+        $(CC) $(CFLAGS) -o $@ $?     # $(INCLUDE)
+
+module2.o: module2.cpp
+        $(CC) $(CFLAGS) -o $@ $?     # $(INCLUDE)
+
+clean:
+        -rm *.o
+
+>
+
+說明：
+
+－ make是個interpreter (跟shell一樣) # Again, what is an interpreter？？？
+－ By default, ‘make’是interpret (PWD之下的) ‘Makefile’這個檔案
+  - 事實上GNU make是先找GNUmakefile, 再找makefile, 最後才找Makefile (誰是GNU？)
+ 		          不過也可以>>make –f  Makefile123<<啦！
+－ 使用Makefile的目的
+ ＊ Specify「到底要執行哪些cmds」
+ ＊ Specify執行「要執行的cmds」的順序
+ ＊ 確保各個cmd中該specify的細節都有specify，沒漏掉也沒錯 // 有時會有超複雜的細節...
+ ＊ 在run這一大堆cmds之前可以「先好好檢查清楚、然後再run」// 有時不小心錯了就GG了...
+ ＊ 只要一次搞對，下次完全照做就好(誰喜歡每次都重來？)
+－ Makefile中可以有‘#’與‘\’(at line end) // Just like shell!
+－ make (跟shell一樣)可以有make-variables (shell可以有shelll-variables)
+ ＊ CFLAGS  =  -O  -systype  bsd43  // 顯然必須要自成一行，顯然‘=’兩邊都可以有white spaces
+ ＊ 取>>CFLAGS<<的值:  ${CFLAGS} // Doesn’t this remind you of something？
+ ＊ 為何>>CFLAGS<<全大寫？(What is the convention here？) // What does ‘CFLAGS’ mean？
+
+Makefile (的內容)的文法(expressed in EBNF)
+
+  <Makefile content> ::= { <variable definition> } { <rule> }
+
+  <variable definition> ::= <identifier> ‘=’ <string with white spaces in between>
+
+  <rule> ::= <target> ‘:’ { <prerequisite> }           # first line
+                          { <recipe> }                 # remaining lines
+
+  <target> ::= NAME           # NAME may or may not be a file name
+
+  <prerequisite> ::= NAME # NAME may or may not be a file name
+
+  <recipe> ::= TAB   SHELL_COMMAND # token (terminal) : 全部大寫
+
+  Note: recipe一定要以TAB作開頭(以告訴make說：這是要給shell執行的cmd)
+
+  Note: SHELL_COMMAND即Linux command
+
+  Note: SHELL_COMMAND可以跨行，
+        但每一行(除了最後一行)的最後要有‘\’ (畢竟，這應是「一行」)
+        而且
+        只有第一行是以TAB開頭
+
+  Note: Automatic make-variables (‘automatic’者 df= 天生就有)
+        $@ : name of the target (file)
+        $? : names of all prerequisites that are newer than the target
+        $^ : names of all prerequisites
+
+----------------------------------------------------
+
+六、make的進階說明(若時間不夠可跳過)
+
+=== An illustration of what a Makefile can be ===
+
+all: what           # 下一行一開始有個TAB; so, 下一行 is a recipe
+	echo This is \
+   a book.          # 上一行有‘\’ at the end, 代表上一行的 recipe 尚未結束
+	date ; date            # 一開始有個TAB ; so, this is a new recipe
+                         # rule/recipe與rule/recipe之間可有空行可無空行
+what:                # 一開始沒TAB，所以this is a new rule
+	ls -l\  # 一開始有個TAB; so, this is a recipe
+ ../Test1            # 這裡是假設parent directory有個名叫‘Test1’的sub-directory
+	@echo That is a pencil.   # 一開始有個TAB; so, this is a new recipe
+                # 在「要shell執行的指令」之前加‘@’是叫make不要自動echo此要執行的指令
+
+
+Makefile之中的<rule>的meaning
+
+  <rule> ::= <target> ‘:’ { <prerequisite> }  { <recipe> }
+
+IF <target> does not exist (as a file)
+     OR <target> exists but some prerequisite does not exist (as a file)
+     OR <target> exists but is older than some <prerequisite>
+   THEN fire the rule // df= (1) ‘make’ the prerequisites ; (2) run the recipes
+
+Rationale :要make <target>，就應先make the <prerequisite>s (if there is any)
+                   等make完the prerequisites之後，再make <target> (by 執行recipes)
+
+換言之
+  - 如果 target 不是個file，rule就一定會fire
+  - 如果 target 是個file但prerequisites中有不是file者，rule也一定會fire
+  - 如果 target 與prerequisites都是files
+         IF target修改時間是在所有prerequisites修改時間之後，rule就不會fire
+         ELSE rule會fire
+
+Each rule can only be fired once (否則如果target不是file或recipe不生file，就完了(不斷fire))
+
+touch  file1.h  game1.cpp # 改變這兩個files的timestamp to force the firing of rules
+
+‘make’的使用：   make  <target>    或   make    # default target is the first one.
+
+
+Another example make-file ( http://linux.ximizi.com/linux/linux816.htm )
+
+   CC = gcc
+   CFLAGS = -DDEBUG -c
+   LIBS = -lncurses
+   INCLUDE = -I/usr/src/menu/include
+
+   all: clean install
+
+   install: myProgram
+     chmod 750 myProgram
+     cp myProgram /usr/bin
+
+   myProgram: myProgram.o utils.o
+     $(CC) -o $@ $^ $(LIBS)
+
+   myProgram.o:
+     $(CC) $(CFLAGS) -o $@ myProgram.c $(INCLUDE)
+
+   utils.o:
+     $(CC) $(CFLAGS) -o $@ utils.c $(INCLUDE)
+
+   clean:
+     -rm *.o
+
+   # '-'的meaning: carry on with the current target-building process
+                   even if the execution of this particular command fails
+
+   # 再強調一次: 每個shell指令(即每個recipe)的開頭必須是一個TAB
+
+此example Makefile的使用方式
+
+  make all
+  或
+  make clean
+  或
+  make utils.o
+  或
+  ...
+
+----------------------------------------------------
+
+七、A glimpse of software installation with 'make' (若時間不夠可跳過)
+
+( A little bit of understanding about software installation ... )
+
+( We will only talk about the configuration step in slight detail. )
+
+// ===================================================================
+
+Install software on Linux in general - an overview
+
+1. Download (complete source package; often in the form of .tar.gz)
+2. Decompress (tar -vzxf XYZ.tar.gz)
+3. read README to find installation instructions
+4. ./configure (to compute Makefile)
+5. make (according to the computed Makefile)
+
+// ===================================================================
+
+Before we talk about the configuration step of installing openssl, a Q/A is in order.
+
+Question :
+
+  Consider the following installation process (of openssl-0.9.7m) :
+
+     tar -vzxf openssl-0.9.7m.tar.gz > openssl-expand.txt   # 把make-printout導入特定檔案，再用less看
+     cd openssl-0.9.7m
+     ./config --prefix=/usr/local --openssldir=/usr/local/openssl > config_result
+     make > make_restult
+     make test > make_test_result
+     make install > make_install_result   # this should install 'openssl' under /usr/local
+
+  What does the shell scrip '.../openssl-0.9.7m/config' do?
+  I.e., what is the role of this shell script in the entire installation process?
+
+Ans. :
+
+  It (.../openssl-0.9.7m/config) "configures." (即找出(並設定)該有的設定)
+
+  i.e., it (.../openssl-0.9.7m/config) makes preparations for 'make'.
+
+// ===================================================================
+
+# The steps before doing the configuration step.
+
+guest > cp openssl-0.9.7m.tar.gz ~/TestInstall
+guest > cd ~/TestInstall
+guest > tar -vzxf openssl-0.9.7m.tar.gz > openssl-expand.txt
+...
+guest > cd openssl-0.9.7m
+guest > ls -l > original-ls
+guest > ls # note that there is 'Makefile' and 'Makefile.org'
+...
+guest > ls -l # note the date of 'Makefile' and 'Makefile.org'
+...
+guest > less original-ls # if you want to see what is in it
+
+# Now let us do the configuration.
+
+                 # Be careful! there is a '-t'
+guest > ./config -t --prefix=/usr/local \
+> --openssldir=/usr/local/openssl  > temp1
+
+Operating system: x86_64-whatever-linux2 # printed by line 502
+Configuring for linux-x86_64             # line 915 (this) 918 (next)
+/bin/perl5 ./Configure linux-x86_64 --prefix=/usr/local \
+--openssldir=/usr/local/openssl
+
+                 # Be careful! there is a '-d' and a '-t'
+guest > ./config -d -t --prefix=/usr/local \
+> --openssldir=/usr/local/openssl  > temp2
+
+Operating system: x86_64-whatever-linux2
+This system (debug-linux-x86_64) is not supported. See file INSTALL \
+for details.
+
+guest > # Do the rest of the installation ... (we don't show it here)
+
+// ===================================================================
+
+Main structure of this configuration script (.../openssl-0.9.7m/config)
+
+     ...  # PART I
+ 76: (
+     ...  # PART II ( GuessOS )
+417: ) 2>/dev/null | (
+     ...
+     # read the output of the embedded GuessOS
+     read GUESSOS
+     ...
+925: )
+
+PART I is to figure out the values of MACHINE and SYSTEM and others
+
+PART II basically does something like the following:
+
+     echo "${MACHINE}-ibm-${SYSTEM}"; exit 0
+
+// ===================================================================
+
+Check the contents of the directory Linux-Week13
+
+Linux-Week-13
+  openssl-0.9.7m.tar.gz
+  SoftwareInstallation.txt
+  README
+  config
+  Configure
+  Makefile
+  Makefile.org
+  Makefile.from_org
+  linux.pl
+  INSTALL

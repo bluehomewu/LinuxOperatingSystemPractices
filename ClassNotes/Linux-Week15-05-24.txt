@@ -1,0 +1,1238 @@
+Week 15 (Theme of the week : Relationships between the current shell, its descendent shells, and exec-ed subprocesses (including exec-ed bash) - When does fork() take place? When does exec() take place? Who is responsible for what substitutions and when does it happen? Also, environ[], and 'export'.
+
+/usr/include/stdlib.h    # system(), getenv(), setenv(), unsetenv()
+/usr/include/unistd.h    # exec() family, getpid(), getppid(), environ[]
+/usr/include/sys/stat.h  # mkdir(), chmod()
+/usr/include/stdio.h     # remove(), rename(), chown(), chdir()
+
+  Difference between exec() and system()
+  Program entry point
+  Difference between execl(), execlp(), execle(), execv(), execve(), execvp(), and execvpe()
+
+How shell supposedly uses fork()
+
+Command execution and process-subprocess relationships
+
+Shell variables, environment variables, and environ[]
+
+export vs. environ[], set, env, putenv, PrintPID, PrintVar
+
+Given that the order of shell substitutions for a basic command is indeed what we have suggested in this course, what about the basic commands that are to be handled by child (or grand child or great grand child or ...) shell processes? That is, does the parent shell process (the current shell process) does anything (for the child or grand child or great grand child processes) to the basic commands that are "occur within" the commands to be handled by its descendent shell processes?
+
+How should we view an environment function? What is its role???
+
+～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～～
+
+https://man7.org/linux/man-pages/dir_all_alphabetic.html    # the html version of 'man'
+
+# Use the above to see what Linux commands are there ; but note that 'man' may be a better choice (e.g., >>man man<<) for understanding a command in detail
+
+# To get a detailed description of a built-in command (e.g., 'type' or 'alias'), run >>man bash<<, key in >>/command-nameENTER<<, and then repeatedly press >>n<< to get to a desired place in the bash-description.
+
+# To see whether a command is built-in, use 'type -a' (e.g., >>type -a ls<<) or use >>PrintPID ; <command> ; PrintPID<<.
+# 'type' itself is a built-in command.
+
+-----------
+
+### Some more information regarding the Unix/Linux interface of C/C++
+
+-----------
+
+/usr/include/stdlib.h    # system(), getenv(), setenv(), unsetenv()
+/usr/include/unistd.h    # exec() family, getpid(), getppid(), environ[]
+/usr/include/sys/stat.h  # mkdir(), chmod()
+/usr/include/stdio.h     # remove(), rename(), chown(), chdir()
+
+-----------
+
+cat /usr/include/unistd.h | grep extern
+cat /usr/include/unistd.h | grep define
+# Never start a variable-name or a function-name with an underline！
+
+# Also try :
+cat /usr/include/unistd.h | egrep (get|set)   # why does it not work???
+cat /usr/include/unistd.h | egrep '(get|set)'
+
+---------------------------------------
+
+> su test-user1            # to do things as test-user1
+> cd ~/C-Test1
+> ./test1.out &            # we deliberately create two
+> ./test1.out &            # infinite-loop processes with
+                           # owner being 'test-user1'
+
+> kill -9 <process-id> <process-id>
+
+---------------------------------------
+
+subprocesses, child-processes, shell variables, and environment variables
+
+一、
+
+fork(產生child processes)的使用方式 in general
+
+#   # include <unistd.h>
+#   # include <sys/wait.h>      # unless some other already included .h also includes this ; but should be of no harm
+#
+#   pid_t original = getpid(); // my pid
+#   pid_t pid = fork();        // child pid
+#
+#   if ( pid == -1 ) {
+#     // The attempt to fork a process has failed
+#     ... // Do error handling
+#   } // if fork() failed
+#
+#   else if ( pid == 0 ) { // I am the child process.
+#     ... // code for the child process
+#   } // else if I am the child process
+#
+#   else { // pid NOT 0 // I am the parent process.
+#
+#     ... // code for the parent process
+#
+#     # "whether to wait" is up to the parent to decide
+#
+#     if ( waitpid( pid, &status, 0 ) > 0) {
+#
+#       ...
+#
+#     } // waitpid() succeeded
+#
+#     else // waitpid() failed
+#       DP( EXEC_DEBUG, (char *) "waitpid() failed." );
+#
+#     ... // code for the parent process
+#
+#   } // else I am the parent process
+#
+#   ... // code for both of us (if fork succeeded (and the child returns)) or just me (if the attempt to fork failed)
+
+shell的運作(something like this)
+
+#   # include <unistd.h>
+#
+#   pid_t original = getpid(); // my pid
+#   pid_t pid = fork() ;       // child pid
+#
+#   if ( pid == -1 ) {
+#     // The attempt to fork a process has failed
+#     ... // Do error handling
+#   } // if fork() failed
+#
+#   else if ( pid == 0 ) { // I am the child process.
+#     exec( ... ) // subsume the current process (and will not return) // e.g., execve( "/usr/bin/printenv", argv, environ )
+#   } // else if I am the child process
+#
+#   else // else I am the parent process
+#     ;  // no need to do anything here, since we will do the things below
+#
+#   ... // code of the parent process (can either do 'waitpid()' or does not do 'waitpid()')
+
+----------------------------------------------------
+
+二、Three off-track topics
+
+(a) Difference between system() and exec()
+
+system() causes more (or lots of?) system overhead, but can do a list of pipelines (i.e., a "normal" line of Linux commands).
+
+exec() is comparatively more efficient, but can only do one single command (which can be a script though).
+
+(b) Entry point (https://en.wikipedia.org/wiki/Entry_point#C_and_C++)
+
+In C and C++, the function prototype of the main function looks like one of the following:
+
+  int main( void ) ;
+  int main();
+
+  int main( int argc, char **argv ) ;
+  int main( int argc, char *argv[] ) ;
+  int main( int argc, char **argv, char **envp ) ;
+
+  // more specifically in C
+  // NOT according to the ISO C standard 5.1.2.2.1
+  // BUT in embedded programming depending on the μC, this form is also used
+  void main( void ) ;
+
+Darwin-based operating systems, such as macOS, have a fourth parameter containing arbitrary OS-supplied information, such as the path to the executing binary:
+
+  int main( int argc, char **argv, char **envp, char **apple ) ;
+
+(c) ( https://stackoverflow.com/questions/55743496/difference-between-exec-execvp-execl-execv )
+    ( https://www.ibm.com/docs/en/aix/7.1?topic=e-exec-execl-execle-execlp-execv-execve-execvp-exect-fexecve-subroutine )
+
+Difference between execl(), execlp(), execle(), execv(), execve(), execvp(), and execvpe()
+
+'l' : list ; pass a list of arguments
+
+'v' : vector ; put the arguments in a vector and pass the vector
+
+'p' : this tells exec() to "please find the named executable under one of the paths listed in $PATH"
+
+no 'p' : the path of the executable is explicitly given as one of the arguments
+
+'e' : an environment (an array of environment-variable-value string) is explicitly given as one of the arguments
+
+no 'e' :  this tells exec() to "please just use the 'environ' of this process as your 'environ'"
+
+In fact, all these exec() functions are just "frontends" for 'execve()'.
+
+----------------------------------------------------
+
+三、Execution of Linux commands (by shell) and process-subprocess relationships
+
+> cat PrintPID.cpp
+
+# include <unistd.h>
+# include <stdio.h>
+
+int main( int argc, char** argv ) {
+
+  int pid = getpid() ;
+
+  printf( "My pid is : %d\n", pid ) ;
+
+  int ppid = getppid() ;
+
+  printf( "My parent pid is : %d\n", ppid ) ;
+
+} // main()
+
+> cat PrintPID.sh
+
+echo my PID is :
+echo $$
+echo my parent-PID is :
+echo $PPID
+
+> echo $$
+12367
+
+> echo $PPID
+12366
+
+# The current shell is 12367 ; its parent shell is 12366
+
+> PrintPID ; echo $a ; echo $d ; PrintPID
+My pid is : 4630
+My parent pid is : 12367
+111
+
+My pid is : 4631
+My parent pid is : 12367
+
+# 'echo' is a built-in command of bash ; to "execute" 'echo', there is no need to fork any child process ; the current shell process just do something directly by itself.
+
+> PrintPID
+My pid is : 4587
+My parent pid is : 12367
+
+> PrintPID.sh # echo $$ and $PPID
+my PID is :
+4590
+my parent-PID is :
+12367
+
+> bash PrintPID.sh
+my PID is :
+4620
+my parent-PID is :
+12367
+
+> PrintPID ; PrintPID.sh ; bash ./PrintPID.sh ; PrintPID
+My pid is : 5916
+My parent pid is : 12367
+my PID is :
+5917
+my parent-PID is :
+12367
+my PID is :
+5918
+my parent-PID is :
+12367
+My pid is : 5919
+My parent pid is : 12367
+
+# Whether we run a shell script or an executable when interacting with the current shell, the current shell always forks a child-shell to excv() it (if what is to be run is a shell script, the child-shell uses excv() to run 'bash' and let the designated shell script be the sole argument of this 'bash' command).
+
+> type -a bash     # 'bash' is an executable written in C/C++
+bash is /bin/bash
+
+# If the "command" we want (the shell) to execute is just ONE shell script or executable, then when the corresponding excv() is run, the resulting process will just "subsume" the child shell process that is fork-ed by the current shell process.
+
+-------------------------------------
+
+On the side (the DOT command)
+
+> cat PrintPID.sh
+
+echo my PID is :
+echo $$
+echo my parent-PID is :
+echo $PPID
+
+> ./PrintPID.sh     # fork a child-shell to exec() 'bash' and let './Print.sh' be the sole arugment of 'bash'
+my PID is :
+6789
+my parent-PID is :
+12367
+
+> . ./PrintPID.sh   # directly execute the content of './Print.sh' in the current shell
+my PID is :
+12367
+my parent-PID is :
+12366
+
+Also on the side (How should we view an environment function? What is its role???)
+
+An environment function is a "shell script template". When an environment function is run (perhaps with positional parameters), the content of the environment function (which is a bunch of command lines, with all positional parameters replaced by the corresponding actual parameters) is run directly BY THE CURRENT SHELL. It is very likely that the system (the current shell) just replaces the call of an environment function with its (properly filled) content and then uses the DOT command to execute this replaced content.
+
+> function MyEcho() {
+$   echo $1
+$ } # MyEcho()
+
+> PrintPID ; MyEcho hi ; PrintPID
+My pid is : 8525
+My parent pid is : 12367
+hi
+My pid is : 8526
+My parent pid is : 12367
+
+-------------------------------------
+
+# Below was done on CentOS 7.9 ; the reason for using CentOS and not Ubuntu is stated below.
+
+> echo $$
+753
+
+> ps -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0  1205   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+> (ps -l)
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0  1217   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+> (ps -l | ps -l | ps -l)
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+1 S     0  1221   753  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0  1222  1221  0  80   0 - 38332 -      pts/2    00:00:00 ps
+0 R     0  1223  1221  0  80   0 - 38332 -      pts/2    00:00:00 ps
+0 R     0  1224  1221  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+> ps -l | ps -l | ps -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0  1228   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+0 R     0  1229   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+0 R     0  1230   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+# On Ubuntu, it may happen that some of the child/grand-child processes are no longer on the list when the above lists show up
+
+> ps -l ; ps -l ; ps -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17450   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17451   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17452   753  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+> ( ps -l ; ps -l ; ps -l )
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+1 S     0 17549   753  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17550 17549  0  80   0 - 38332 -      pts/2    00:00:00 ps
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+1 S     0 17549   753  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17551 17549  0  80   0 - 38332 -      pts/2    00:00:00 ps
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+4 S     0   739   663  0  80   0 - 57989 do_wai pts/2    00:00:00 su
+4 S     0   753   739  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+1 S     0 17549   753  0  80   0 - 29214 do_wai pts/2    00:00:00 bash
+0 R     0 17552 17549  0  80   0 - 38332 -      pts/2    00:00:00 ps
+
+-------------------------------------
+
+> PrintPID ; echo "hi" ; echo "why" ; echo "whatever" ; PrintPID ; PrintPID
+My pid is : 4697
+My parent pid is : 12367
+hi
+why
+whatever
+My pid is : 4698
+My parent pid is : 12367
+My pid is : 4699
+My parent pid is : 12367
+
+# 'echo' is a built-in command. Therefore, when we execute 'echo', the current shell does the echoing directly by itself. It does not fork a child shell process to excv() it.
+
+> PrintPID ; echo "hi" | echo "why" | echo "whatever" ; PrintPID
+My pid is : 4709
+My parent pid is : 12367
+whatever
+My pid is : 4713
+My parent pid is : 12367
+
+> PrintPID ; echo "hi" | echo "why" | echo "whatever" | PrintPID ; PrintPID
+My pid is : 4689
+My parent pid is : 12367
+My pid is : 4693
+My parent pid is : 12367
+My pid is : 4694
+My parent pid is : 12367
+
+# However, for EACH command that appears within a pipeline (e.g., 'cmd0' or 'cmd1' or 'cmd2' in 'cmd0 | cmd1 | cmd2'), the current shell ALWAYS forks a child-shell to execute that command, probably because the current shell needs to "connect" the stdout and stdin for the commands appearing on the left and right sides of each '|', DISREGARDING whether that command is a built-in command or not.
+
+-------------------------------------
+
+Question time :
+
+# 'read' is a built-in command that works like the following
+
+> read aVar
+When tomorrow comes too soon ...
+
+> echo $aVar
+When tomorrow comes too soon ...
+
+# Explain why the following
+
+> echo "hi" | read aVar1
+> echo $aVar1    # notice that there is no value for 'aVar1' (it is not defined at all)
+
+> echo "hello" | ( read aVar2 ; echo $aVar2 )
+hello
+
+-------------------------------------
+
+四、Quick review and more
+
+Be sure to remember the following :
+
+# '(' asks the shell to use a subshell to do the commands contained within '(' and ')'
+> (a=10; a=$a+20)  # Value of 'a' of the current shell remains unchanged
+
+# '((' has nothing to do with '(' ; '((' is a bash-extension ; it is just a convenient notation for writing arith. expression
+> (( a = 100, b = 25, a = a*( b - 5 ) + 20 ))  # Value of 'a' of the current shell changes
+> echo $a ; echo $b
+2020
+25
+
+# '$((' is another a bash-extension ; it is '((' PLUS "returning an integer value" (evaluate and substitute)
+> b=$(( a = 10, b = 25, a = a*( b - 20 ) + 20 ))
+> echo $a ; echo $b
+70
+70
+
+# '$(' can be viewed as '(' PLUS "using the output to stdout to replace" ; it is a "bash way" of writing ###`...`###
+
+On the side :
+
+  The reason for using ###( ... )### to do things is so that any change made to the environment by "command(s)" of the form 'var=value' will not affect the current environment (of variable-value pairs) of the current shell process.
+
+-------------------------------------
+
+### How shell works (an educated guess nonetheless) :
+###
+### 先區分出command line中所有的特殊字元與words(不含white-spaces)與strings(可以含white-spaces)，
+### 然後整理出a list of pipelines (pipeline與pipeline之間是以 ;, &, &&, || 隔開來)
+### (pipeline是(a) basic command( = 基本上是一串的words與strings，
+###                                 其中可以出現'$(...)'  (之中的'...'也是一個command-line), 或
+###                                             '$((...))'(之中的'...'只能是一個arithmetic expression)
+###                             ), 或
+###            (b) '( ... )'   (之中的'...'也是一個command-line), 或
+###            (c) '(( ... ))' (之中的'...'只能是一個arithmetic expression)
+###            (d) '{ ... ; }' (之中的'...'也是一個command-line)
+###  其後可以followed by file-redirection operators 如 '>', '<', '>>', '|', '|&')
+### )
+### 然後依規矩執行各個pipeline(即 先安排好stdin, stdout, stderr，
+###                               然後EITHER直接執行the built-in 或 '((..))'之中的'...'、
+###                                   OR    fork a child shell去 excv() the executable 或 處理'(...)'之中的'...'  )
+###
+### 註：如果此pipeline是'... | ... | ...'，則是 for each '...' 都另fork a child shell去執行之
+###
+### 註：'var=str var=str ...' is considered a basic command (it is in fact a built-in)
+###
+### 註：執行>>`...`<<的方式是：fork a child shell去執行'...'，然後將出現於stdout中的output拿來replace此>>`...`<<
+###
+### 註：執行>>{ ... ; }<< 等同 執行>> ... <<<
+###
+### (When it comes to the execution of a BASIC COMMAND, the shell does the following IN THAT ORDER.)
+### history-substitution (no repetition to talk about, since there are no history commands in history list)
+### -> alias substitution (with repetition)
+### -> $-substitution (no repetition ; however, there can be nested $-substitutions ('$'s can be nested))
+### -> file-name expansion (no repetition)
+### -> Word (re-)splitting (quoted string與double-quoted string除外)
+### -> final command execution # the eventual execution of the current basic command
+
+  Word Splitting
+    The shell scans the results of parameter expansion, command substitution, and arithmetic
+    expansion that did not occur  within  double  quotes for word splitting. (And word splitting,
+    in turn, can change the number of words.)
+
+# But note that the handling of '<var>=<something>' is a little bit different. The difference is in that <something>.
+
+# >> abc=10 xyz=20 efg=30 wxy=40 << is OK  # Note : there are no command separators!
+# >> abc=10 date << is OK                  # again, no command separator needed
+# >> abc=10 date date << not OK            # need a command separator between 'date'
+# >> date date << not OK                   # command separator needed
+
+    A variable may be assigned to by a statement of the form
+
+           name=[value]
+
+    If  value  is not given, the variable is assigned the null string.
+
+    All
+    values undergo tilde expansion, parameter and variable expansion,  com-
+    mand  substitution, arithmetic expansion, and quote removal (see EXPAN-
+    SION below).  If the variable has its integer attribute set, then value
+    is evaluated as an arithmetic expression even if the $((...)) expansion
+    is not used (see Arithmetic Expansion below).
+
+    Word  splitting  is  NOT
+    performed,  with the exception of "$@" as explained below under Special
+    Parameters.  Pathname expansion is NOT  performed.  ...
+
+-------------------------------------
+
+# But what about the basic commands that are to be handled by child (or grand child or great grand child or ...) shell processes? Does the parent shell process (the current shell process) does anything (for the child or grand child or great grand child processes) to these basic commands?
+
+# An educated guess (see the Appendix ) :
+
+  The parent shell process (the current shell process) does NOT do anything to the commands that are to be handled by child (or grand child or great grand child, etc.) shell processes. (other than the initial word-splitting perhaps ...)
+
+----------------------------------------------------
+
+五、Shell variables, environment variables, and environ[]
+
+# A shell is written in C and is (just) an application, just like any other executable. It (e.g., bash) has nothing to do with the OS (kernel).
+
+# A shell interacts with a user and offers the user a convenient way of controlling the execution of various executables so as to achieve the user's goal(s). It also provides various built-in commands (e.g., 'echo' and 'type') for the user to use. (When the user interacts with a shell via a console window, that console window serves as the stdin and stdout of that shell.)
+
+--------------
+
+# Unix/Linux allows each process to have an associated "environment" (= a set of (environment) variable-value pairs).
+#
+#   extern char **environ ;  // alternatively, you can also put '# include <unistd.h>' here
+#
+# Check https://notes.shichao.io/apue/ch7/ to see where 'environ' (of the current process) points to in memory.
+#
+# To access the content of the environment (the content of 'environ[]') of the current process, use the following functions.
+#
+#   # include <stdlib.h>  // in order to use the following functions
+#
+#   char *getenv( const char *name );
+#   // Returns a pointer to the string value associated with 'name', NULL if not found
+#
+#   int putenv( char *str );
+#   /* Put STR, which is of the form "NAME=VALUE", in the environment.
+#      If there is no `=', remove NAME from the environment.  */
+#   // Returns 0 if OK, nonzero on error
+#
+#   int setenv( const char *name, const char *value, int rewrite );
+#   /* Set NAME to VALUE in the environment.
+#      If REPLACE is nonzero, overwrite an existing value.  */   # hsia : ??? doesn't 'set' already mean "overwrite" ???
+#
+#   /* Remove the variable NAME from the environment.  */
+#   int unsetenv( const char *name );
+#
+# (We can't find references of putenv/setenv/unsetenv in https://www.cplusplus.com/reference/cstdlib/
+#  However, we can find protocols of these three functions in /usr/include/stdlib.h.)
+# > cat /usr/include/stdlib.h | less     # Then, key in '/setenv', followed by ENTER ; PAGE UP/DOWN; HOME to get to top of page
+
+--------------
+
+How does "the call stack" really look like
+
+https://stackoverflow.com/questions/63821293/how-does-setenv-and-unsetenv-change-the-stack
+
+stack smashing
+
+https://stackoverflow.com/questions/40489161/why-this-piece-of-code-can-get-environment-variable-address
+
+--------------
+
+> cat PrintEnv.c
+
+# include <stdio.h>
+
+extern char **environ ;    # alternatively, use '# include <unistd.h> ;'
+
+int main( int argc, char **argv ) {  // some compilers allow a third argument >>char** envp<< which is not POSIX-compliant
+
+  for ( int i = 0 ; environ[i] != NULL ; i++ ) {
+
+     printf( "environ[%d] : >>%s<<\n", i, environ[i] ) ;
+
+     // printf( "envp[%d]    : >>%s<<\n", i, envp[i] ) ;
+
+  } // for every environment variable-value pair (every 'NAME=VALUE' string) in environ[]
+
+  return 0 ;
+
+} // main()
+
+> PrintEnv
+environ[0] : >>TERM=xterm<<
+environ[1] : >>SHELL=/bin/bash<<
+...
+environ[21] : >>LESSOPEN=| /usr/bin/lesspipe %s<<
+environ[22] : >>LESSCLOSE=/usr/bin/lesspipe %s %s<<
+environ[23] : >>BASH_FUNC_quote%%=() {  local quoted=${1//\'/\'\\\'\'};
+ printf "'%s'" "$quoted"
+}<<
+environ[24] : >>_=./PrintEnv<<
+
+> env  # should render the same results
+
+> strings /proc/$$/environ    # '$$' will be first expanded to be the process id of the current process
+
+重點：Every executable (run in a UNIX/Linux environment) has its own copy of 'environ[]'
+      其內容就是所謂的"environment variables" (along with their associated (string-)values)
+
+--------------
+
+# A shell has "shell variables", some of which are "environment variables."
+# (i.e., an environment variable is a shell variable, but not vice versa.)
+# Only when a shell variable has been "exported" does it become an environment variable.
+#
+# The Linux command 'set' displays all shell variables, while the Linux command 'env' displays all environment variables.
+# In effect, 'env' just prints the content of 'environ[]' of the current process (a bash program in execution).
+#
+# The 'export' command is a built-in command of shell.
+#
+# bash additionally supports 'export -f', the use of which "exports" an "environment function" via the environ[] mechanism.
+# bash also supports 'export -n names', the use of which causes the export property of all specified names to be removed.
+#
+# > abc=123          # 'abc' is "only" a shell variable ; seems that it does not appear in 'environ[]'
+# > export abc       # now 'abc' is an environment variable, and seems that it now appears in 'environ[]'
+# > export -f F1     # "exporting" an "environment function" in a bash session
+# > export -n F1 abc # should cause both 'abc' and some-kind-of-F1 to be removed from 'environ[]' for the bash session
+
+--------------
+
+environment variables ～ "one-way global variables" among processes (= programs in execution) with ancestor-descendent relationships
+
+--------------
+
+# The notion of 'export' is (only) a shell-concept, not a UNIX/Linux concept.
+# Every shell (e.g., bash in execution) has its own copy of shell variables.
+# In the meantime, it (the shell, e.g., bash in execution) also maintains the content of its 'environ[]'.
+#
+# When a child process is forked, the child process starts with a copy of its parent process, including a copy of 'environ[]' (the only difference between the parent and the child is in the return-value of fork())
+
+> cat PrintVar.cpp
+
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+
+int main( int argc, char** argv ) {
+
+  int pid = getpid() ;
+
+  printf( "My pid is : %d\n", pid ) ;
+
+  int ppid = getppid() ;
+
+  printf( "My parent pid is : %d\n", ppid ) ;
+
+  for ( int i = 2 ; i <= argc ; i++ ) {
+
+    char * val = getenv( argv[i-1] ) ;
+    printf( "%s : %s\n", argv[i-1], ( val == NULL ) ? "" : val  ) ;
+
+  } // for every argument specified by the user on the command line when invoking this executable
+
+  printf( "=== Done - PrintVar. ===\n" ) ;
+
+} // main()
+
+> abc='Hi there! How are you!'
+
+> export abc
+
+> echo $$
+26885
+
+> ./PrintVar abc
+My pid is : 27882
+My parent pid is : 26885
+abc : Hi there! How are you!
+=== Done - PrintVar. ===
+
+> restAssured='1 3 5 7 9'
+
+> echo $restAssured
+1 3 5 7 9
+
+> ./PrintVar abc restAssured
+My pid is : 27909
+My parent pid is : 26885
+abc : Hi there! How are you!
+restAssured :
+=== Done - PrintVar. ===
+
+> printenv abc
+Hi there! How are you!
+> printenv restAssured
+>
+
+> bash -c 'echo $abc'    # Use 'man bash' or 'https://man7.org/linux/man-pages/man1/bash.1.html' to see what '-c' is for
+Hi there! How are you!
+> bash -c 'echo $restAssured'
+
+>
+
+> cat AddVarCallPrintVar.cpp
+
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+
+int main( int argc, char** argv ) {
+
+  int pid = getpid() ;
+
+  printf( "My pid is : %d\n", pid ) ;
+
+  int ppid = getppid() ;
+
+  printf( "My parent pid is : %d\n", ppid ) ;
+
+  putenv( (char *) "HiThere=WhatHappened" ) ;
+
+  printf( "Executing ### system( \"./PrintVar HiThere\" ) ### ...\n" ) ;
+
+  system( "./PrintVar HiThere" ) ;
+
+  system( "bash -c 'echo $abc'" ) ;      # we add 'bash' here to make sure that bash is used to interpret the list
+  system( "bash -c 'echo $restAssured'" ) ;
+  system( "bash -c 'echo $HiThere'" ) ;
+
+  printf( "=== Done - AddVarCallPrintVar. ===\n" ) ;
+
+} // main()
+
+> ./AddVarCallPrintVar
+My pid is : 27981
+My parent pid is : 26885
+Executing ### system( "./PrintVar HiThere" ) ### ...
+My pid is : 27983
+My parent pid is : 27982
+HiThere : WhatHappened
+=== Done - PrintVar. ===
+Hi there! How are you!
+
+WhatHappened
+=== Done - AddVarCallPrintVar. ===
+
+>
+
+--------------
+
+Question time
+
+# There is a shell variable named 'neva' (non-environment-varialbe named 'a') which is not an environment variable.
+# The current value of 'neva' is '100'.
+
+> printenv neva
+> PrintVar neva
+My pid is : 6626
+My parent pid is : 12367
+neva :
+=== Done - PrintVar. ===
+> echo $neva
+100
+
+# There is also an environment variable named 'eva' (environment-varialbe named 'a').
+# The current value of 'eva' is '123'.
+
+> printenv eva
+123
+> PrintVar eva
+My pid is : 6634
+My parent pid is : 12367
+eva : 123
+=== Done - PrintVar. ===
+> echo $eva
+123
+
+# Let us use a a child shell to execute several commands.
+
+> ( printenv neva ; PrintVar neva ; echo $neva ; echo '---------' ; printenv eva ; PrintVar eva ; echo $eva )
+My pid is : 6669
+My parent pid is : 6667
+neva :
+=== Done - PrintVar. ===
+100
+---------
+123
+My pid is : 6671
+My parent pid is : 6667
+eva : 123
+=== Done - PrintVar. ===
+123
+
+Question : Who (the first and the last printenv/PrintVar/echo) printed what, and why???
+
+(Note that 'printenv' is not a built-in command. It is in fact an executable (and works just like PrintVar).)
+
+> type -a printenv
+printenv is /usr/bin/printenv
+
+--------------
+
+Some more questions
+
+> echo $$
+12367
+
+> bash
+
+> # we are now interacting with a new bash-shell (we are executing 'bash')
+
+> echo $$
+6732
+
+> echo $PPID
+12367
+
+> echo $neva
+
+> echo $eva
+123
+
+> printenv neva
+> PrintVar neva
+My pid is : 6762
+My parent pid is : 6732
+neva :
+=== Done - PrintVar. ===
+
+> printenv eva
+123
+> PrintVar eva
+My pid is : 6768
+My parent pid is : 6732
+eva : 123
+=== Done - PrintVar. ===
+
+Question : What happened to 'neva'??? Shouldn't it appear in the new bash-shell???
+
+----------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+
+Appendix :
+
+(1) Some evidence suggesting that a subprocess does its own command separation and shell substitution.
+
+Evidence 1 :
+
+> printenv DDD   # not defined
+> echo $DDD      # just to make sure
+
+> ( export DDD=20 ; printenv DDD ; echo $DDD )
+20
+20
+>
+
+# The above serves to show that '$DDD' was not replaced by the current shell ; it was the child-shell who replaces '$DDD' with the value of 'DDD', which was newly defined within the confine of the child shell.
+
+# Below is some further evidence showing that a sub-shell defines its own shell variables and also retrieves the values of its own shell variables (with no involvements of its parent shell)
+
+> echo $noSuchVar
+
+> set | grep noSuchVar
+> alias DefineNoSuchVar='noSuchVar=246810'
+> set | grep noSuchVar
+> echo $noSuchVar
+
+> ( echo $noSuchVar
+> set | grep noSuchVar
+> DefineNoSuchVar
+> set | grep noSuchVar
+> echo $noSuchVar
+> )
+
+noSuchVar=246810
+246810
+> set | grep noSuchVar
+> echo $noSuchVar
+
+> #####
+> #####
+> echo $DDATE
+
+> set | grep DDATE
+> alias DefineDDATE='DDATE=date'
+> set | grep DDATE
+_=DefineDDATE
+> echo $DDATE
+
+> ( echo $DDATE
+> set | grep DDATE
+> DefineDDATE
+> set | grep DDATE
+> `echo $DDATE`
+> )
+
+DDATE=date
+日  1月  1 13:28:04 CST 2023
+> set | grep DDATE
+> echo $DDATE
+
+> `echo $DDATE`
+> #####
+> #####
+> #####
+> set | grep DDATE1642               # there are no shell var./func. whose names contain 'DDATE1642'
+> echo $DDATE1642                    # no such shell var. confirmed
+
+> function DefineDDATE1642() {       # define a shell function that will create such a shell var.
+> DDATE1642=date
+> } # DefineDDATE1642()
+> echo $DDATE1642                    # still no such shell var.
+
+> set | grep DDATE1642               # the definition of the shell func., however, has been stored
+DefineDDATE1642 ()
+    DDATE1642=date
+> ( echo $DDATE1642                  # check whethere there is such a shell var. in the child shell
+> set | grep DDATE1642               # confirm it
+> echo ------------
+> DefineDDATE1642                    # call the shell func. to create the shell var.
+> echo $DDATE1642                    # now we should have this shell var. (with the value 'date')
+> set | grep DDATE1642               # confirm it
+> `echo $DDATE1642`                  # should result in the execution of 'date'
+> )
+                                     # result of 'echo $DDATE1642'
+DefineDDATE1642 ()                   # result of 'set | grep DDATE1642' (same as what the parent has)
+    DDATE1642=date
+------------
+date                                 # 'DDATE1642' now exists and has this value
+DDATE1642=date                       # result of 'set | grep DDATE1642'
+DefineDDATE1642 ()
+    DDATE1642=date
+日  1月  1 16:45:47 CST 2023         # result of executing >>`echo $DDATE1642`<<
+> echo $DDATE1642                    # back to the current shell ; check whether 'DDATE1642' has been defined
+
+> set | grep DDATE1642               # confirm it
+DefineDDATE1642 ()                   # only the previously defined shell function still exists
+    DDATE1642=date
+>
+
+Evidence 2 :
+
+> ./PrintBackQuoteDate
+`date`
+
+> `./PrintBackQuoteDate`    # When the current shell process executes this command, below is the response.
+`date`: command not found
+
+> ./PrintPID
+My pid is : 6311
+My parent pid is : 12367
+
+# The next command '( cp PrintPID ... ; ./PrintPID )' should serve to show that a child-shell does its own shell substitutions (at least in the case of substituting back quoted commands).
+
+> ( cp PrintPID PrintBackQuoteDate ; ./PrintPID ; `./PrintBackQuoteDate` ; ./PrintPID )
+My pid is : 6316
+My parent pid is : 6314
+My: command not found               # if it was the parent shell that did the substitution, this would have been different
+My pid is : 6320
+My parent pid is : 6314
+
+Note :
+
+  Previously, we tried to use the command ###( alias DD105='date' ; DD105 )### to show that a child shell does not do command substitution (at least in the case of alias substitutions). As it turned out, the command ###alias DD107='date' ; DD107### (i.e., directly defining an alias in the current shell and then use it) does not work even for the current shell. (The current shell does define an alias (DD107), but for some reason, it fails to do the subtitution for the word (DD107) behind ';').
+
+  After performing more investigations (see below), we conclude that a descendent shell, for some reason, CAN define new aliases but WILL FAIL to do alias substitution FOR ITS OWN NEWLY DEFINED ALIASES. Our conclusion then is that "the fact that descendent shells fail to do alias substitution for its (own) newly defined aliases is probably (just) a bug."
+
+  > CallingDate                       # alias not defined in the current shell
+  CallingDate: command not found
+  > ( alias CallingDate=date          # define such an alias in the child shell
+  > CallingDate                       # run the alias in the child shell
+  > )
+  CallingDate: command not found      # result
+  > CallingDate                       # alias still not defined in the current shell
+  CallingDate: command not found
+  > alias CallingDate=date            # define this alias in the current shell
+  > CallingDate                       # run the alias in the current shell
+  日  1月  1 13:42:35 CST 2023
+  > #####
+  > #####
+  > #####
+  > CallingDateAgain                                 # alias not defined in the current shell
+  CallingDateAgain: command not found
+  > set | grep DefineAliasThatIsCallingDateAgain     # this shell variable is not defined in the current shell
+  > echo $DefineAliasThatIsCallingDateAgain          # one more confirmation (that the var. is not defined)
+
+  > ( echo $DefineAliasThatIsCallingDateAgain        # does the same variable defined in the child shell? (the ans. is NO)
+  > set | grep DefineAliasThatIsCallingDateAgain     # confirmation of the above
+  > DefineAliasThatIsCallingDateAgain='alias CallingDateAgain=date'   # define the shell variable (in the child shell)
+  > echo $DefineAliasThatIsCallingDateAgain          # show that the variable is now defined in the child shell
+  > `echo $DefineAliasThatIsCallingDateAgain`        # should cause the alias 'CallingDateAgain' to be defined
+  > CallingDateAgain                                 # run the alias in the child shell
+  > )
+
+  alias CallingDateAgain=date                        # the value of 'DefineAliasThatIsCallingDateAgain' is as expected
+  CallingDateAgain: command not found                # however, alias subtitution not performed in the child shell
+  > echo $DefineAliasThatIsCallingDateAgain          # back to the current shell, this variable (still) not defined
+
+  > set | grep DefineAliasThatIsCallingDateAgain     # just to confirm the above
+  > DefineAliasThatIsCallingDateAgain='alias CallingDateAgain=date'   # define the variable (in the current shell)
+  > echo $DefineAliasThatIsCallingDateAgain          # the value of 'DefineAliasThatIsCallingDateAgain' is as expected
+  alias CallingDateAgain=date
+  > `echo $DefineAliasThatIsCallingDateAgain`        # should cause the alias 'CallingDateAgain' to be defined
+  > CallingDateAgain                                 # run the alias in the current shell
+  日  1月  1 13:52:08 CST 2023
+  > #####
+  > #####
+  > #####
+  > newAlias                                         # an undefined alias
+  newAlias: command not found
+  > ( alias                                          # what are the alias of the child shell at the start
+  > echo ---------------
+  > alias newAlias=date                              # define this alias in the child shell
+  > alias                                            # show the defined aliases of the child shell (again)
+  > echo ---------------
+  > newAlias                                         # run the newly defined alias in the child shell
+  > )
+  ...
+  alias ls='ls --color=auto'
+  ---------------
+  ...
+  alias ls='ls --color=auto'
+  alias newAlias='date'                                # the new alias IS defined in the child shell
+  ---------------
+  newAlias: command not found                          # however, alias substitution is not performed for it ...
+  > alias                                            # back to the current shell ; show the current aliases
+  ...
+  alias ls='ls --color=auto'
+  > alias newAlias=date                              # define the same new alias in the current shell
+  > alias                                            # show the aliases of the current shell again
+  ...
+  alias ls='ls --color=auto'
+  alias newAlias='date'                              # the newly defined alias (of the current shell)
+  > newAlias                                         # run the newly defined alias in the current shell
+  日  1月  1 14:04:36 CST 2023
+  > #####
+  > #####
+  > #####
+  > alias | grep DDATE1902                           # there is no alias named 'DDATE1902' in the current shell
+  > DDATE1902
+  DDATE1902: command not found
+  > cat ScriptForAlias.sh                            # a shell script that first defines it and then uses it
+  alias | grep DDATE1902
+  echo ----------
+  alias DDATE1902=date                                 # the shell script also checks whether the alias is defined
+  echo ----------
+  alias | grep DDATE1902
+  echo ----------
+  DDATE1902
+  > ./ScriptForAlias.sh                              # result of executing the shell script (in a sub-shell)
+  ----------
+  ----------
+  alias DDATE1902='date'                               # the alias WAS defined (in the sub, or rather, descendent) shell
+  ----------
+  ./ScriptForAlias.sh: line 7: DDATE1902: command not found # but was NOT substituted, as it should have been
+  > alias | grep DDATE1902                           # back to the current shell ; 'DDATE1902' still not defined
+  > alias DDATE1902=date                             # starting from here is what should have happened
+  > alias | grep DDATE1902
+  alias DDATE1902='date'
+  > DDATE1902
+  日  1月  1 19:08:13 CST 2023
+  > #####
+  > cat ScriptForAlias.sh      # if we use the current shell to run (the content of) the same shell script,
+  alias | grep DDATE2010
+  echo ----------
+  alias DDATE2010=date
+  echo ----------
+  alias | grep DDATE2010
+  echo ----------
+  DDATE2010
+  > . ./ScriptForAlias.sh      # everything (regarding how aliases work) will be as expected (of course)
+  alias DDATE1902='date'
+  ----------
+  ----------
+  alias DDATE1902='date'
+  ----------
+  日  1月  1 20:09:24 CST 2023
+  > #####
+  > #####
+  > #####
+  > alias | grep DDATE1920
+  > DDATE1920
+  DDATE1920: command not found
+  > bash -c '                                        # run the 'bash' program to do the same thing as above
+  $ alias | grep DDATE1920
+  $ DDATE1920
+  $ echo -----
+  $ alias DDATE1920=date
+  $ alias | grep DDATE1920                             # in the process, will also check whether 'DDATE1920' is defined
+  $ echo -----
+  $ DDATE1920 '
+  bash: line 2: DDATE1920: command not found           # 'DDATE1920' not a defined alias ; so, no use running this name
+  -----
+  alias DDATE1920='date'                               # now 'DDATE1920' IS a defined alias
+  -----
+  bash: line 7: DDATE1920: command not found           # but still no use running 'DDATE1920'
+  > #####
+  > #####
+  > #####
+  > # But note that if 'bash' is run as a "normal" executable (via executing excv()) without specifying
+  > # any additional option such as '-c' and 「a text string containing the commands to execute」),
+  > # the behavior of this 'bash' will be EXACTLY THE SAME as the current shell.
+  > # Example :
+  Last login: Sun Jan  1 14:53:06 2023 from xxx.xxx.x.xx  # we have just logged in
+  > bash                                                  # directly run 'bash' in the current shell (= the login shell)
+  > DDATE1346
+  DDATE1346: command not found                            # no such alias
+  > alias DDATE1346=date                                  # so, we define it
+  > DDATE1346                                             # now we have this alias
+  一  1月  2 13:47:29 CST 2023
+  > bash                                                  # run yet another 'bash' (via excv() with no additional arguments)
+  > DDATE1346                                             # it doesn't have the alias (DDATE1346) we just defined
+  DDATE1346: command not found
+  > DDATE1347                                             # to avoid confusion, let us try an alias with a different name
+  DDATE1347: command not found
+  > alias DDATE1347=date
+  > DDATE1347                                             # it works also
+  一  1月  2 13:48:29 CST 2023
+  > exit
+  exit
+  > exit
+  exit
+  > DDATE1346                                             # we are now back to "the current shell" (the login shell)
+  DDATE1346: command not found
+  >
+
+(2) Given the above observation that a child process does its own command separation and shell substitution (at least in the case of handling shell/environmental variables and the substitution of back quoted commands), we now try to answer the question of why all the 'echo $$'s in ###(echo $$ ; (echo $$ ; ( echo $$ ; echo $$ ) ) )### print the process-ID of the current shell and not the process IDs of the respective subshells and subsubshells.
+
+> (echo $$ ; (echo $$ ; ( echo $$ ; echo $$ ) ) )
+12367
+12367
+12367
+12367
+
+> echo $$
+12367
+
+> `echo $$`
+12367: command not found
+
+> ( PrintPID ; `echo $$` ; PrintPID )
+My pid is : 6331
+My parent pid is : 6330
+12367: command not found
+My pid is : 6335
+My parent pid is : 6330
+
+# For the above compound command '( PrintPID ; `echo $$` ; PrintPID )', it was the child-shell that did ###`echo $$`### before it (the child shell) attempted to run the resulting substitution (a process ID) as a command. Since the child-shell complained about '12367' and not its own PID, this should serve to show that, for some reason, '$$' (corresponding to some shell variable?) was inherited and did not get changed.
+
+
+----------------------------------------------------------------------
+
+Google : Are shell variables inherited by subprocesses
+https://unix.stackexchange.com/questions/130985/if-processes-inherit-the-parents-environment-why-do-we-need-export
+
+Google : How are environment variables associated with a process on Linux
+https://notes.shichao.io/apue/ch7/
+https://askubuntu.com/questions/1159340/environment-variables-of-current-process
+
+See also
+https://www.csie.ntu.edu.tw/~ktw/sysprog/sys-prog-prn-7.pdf
+https://www.csie.ntu.edu.tw/~ktw/sysprog/
+
+Google : How does fork work
+https://stackoverflow.com/questions/15102328/how-does-fork-work
+
+----------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+
+Appendix to Appendix :
+
+Below is yet another piece of evidence suggesting that it is the child shell (and not the current shell) that is responsible for executing (and replacing) the `...` that occurs within ###( ....... )###
+
+> cat PrintEcho_eva.c    # 'PrintEcho_eva' just prints "echo $eva"
+
+# include <stdio.h>
+
+int main() {
+  printf( "echo $eva\n" ) ;
+} // main()
+
+> env | grep eva         # 'eva' is an environment variable ('eva' stands for "Environment Variable A")
+eva=123
+> PrintVar eva           # double check
+My pid is : 8472
+My parent pid is : 12367
+eva : 123
+=== Done - PrintVar. ===
+> printenv eva           # again
+123
+>
+
+> `./PrintEcho_eva`      # '$'-substitution only occurs once (even though nested '$'-substituion are allowd)
+$eva
+
+> eval `./PrintEcho_eva`                         # it takes 'eval' to run the text replacing `./PrintEcho_eva`
+123
+
+> PrintPID ; eval echo $eva ; PrintPID           # 'eval' itself is a built-in
+My pid is : 8484
+My parent pid is : 12367
+123
+My pid is : 8485
+My parent pid is : 12367
+
+> PrintPID ; eval `./PrintEcho_eva` ; PrintPID   # one extra sub-shell was fork-ed for handling the `...`
+My pid is : 8488
+My parent pid is : 12367
+123
+My pid is : 8490
+My parent pid is : 12367
+
+> ( PrintPID ; `./PrintEcho_eva` ; PrintPID )    # it must be the child-shell who did the replacement and execution ;
+My pid is : 8494                                 # if it were the current shell who replaced `./PrintEcho_eva`,
+My parent pid is : 8493                          # the child shell would have executed >>echo $eva<< instead,
+$eva                                             # and the result here would have been >>123<< ;
+My pid is : 8496
+My parent pid is : 8493
+
+### One more below (run in a different login shell) ###
+
+> ( PrintPID
+$ dateStr='date'
+$ $(eval 'echo $dateStr')
+$ )
+My pid is : 9868
+My parent pid is : 9867
+六 12月 31 10:56:37 CST 2022
+> echo $dateStr
+
+>
+
+
+
+
+

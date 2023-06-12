@@ -1,0 +1,31 @@
+Storage Management Practices
+
+# Please refer to the material "Linux Storage Management" to create new partitions: 
+#   /dev/sdb2 with 200M 
+#   /dev/sdb3 with 500M
+
+# Check block devices
+> sudo lsblk
+
+# Create PV and check PV info
+> sudo pvcreate /dev/sdb{2,3}
+> sudo pvscan
+
+# Create VG and check VG info
+> sudo vgcreate myvg /dev/sdb{2,3}
+> sudo vgdisplay myvg
+
+# Create LV and check LV info
+> sudo lvcreate -L 200m myvg -n mylv
+> sudo lvdisplay myvg
+
+# Write a file system and then Attach
+HINT: mkfs && mount && chown
+
+# Resize the LV to 500M
+> sudo lvresize -L 500M /dev/myvg/mylv
+> sudo lvdisplay myvg
+
+# Before resizing the filesystem
+> df -h /data/lvm/mylv
+> sudo resize2fs /dev/myvg/mylv
